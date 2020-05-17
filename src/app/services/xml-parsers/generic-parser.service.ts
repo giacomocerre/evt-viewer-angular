@@ -6,6 +6,7 @@ import { CommentData, GenericElementData, HTMLData, LbData, NoteData, NoteLayout
 import { isNestedInElem, xpath } from '../../utils/dom-utils';
 import { replaceMultispaces } from '../../utils/xml-utils';
 import { NamedEntityRefData, NamedEntityType } from './../../models/evt-models';
+import { ApparatusEntriesParserService } from './apparatus-entries-parser.service';
 
 export type ParsedElement = HTMLData | TextData | GenericElementData | CommentData | NoteData | NamedEntitiesList | LbData;
 
@@ -13,7 +14,7 @@ function complexElements(nodes: NodeListOf<ChildNode>): ChildNode[] {
   return Array.from(nodes).filter((n) => n.nodeType !== 8);
 }
 
-type SupportedTagNames = 'event' | 'geogname' | 'lb' | 'note' | 'orgname' | 'p' | 'persname' | 'placename' | 'ptr';
+type SupportedTagNames = 'app' | 'event' | 'geogname' | 'lb' | 'note' | 'orgname' | 'p' | 'persname' | 'placename' | 'ptr';
 
 @Injectable()
 export class GenericParserService {
@@ -38,7 +39,13 @@ export class GenericParserService {
     persname: this.parseNamedEntityRef,
     placename: this.parseNamedEntityRef,
     ptr: this.parsePtr,
+    app: this.parseApp,
   };
+
+  constructor(
+    private apparatusEntriesParser: ApparatusEntriesParserService,
+  ) {
+  }
 
   parse(xml: XMLElement): ParsedElement {
     if (!xml) { return { content: [xml] } as HTMLData; }
@@ -50,6 +57,10 @@ export class GenericParserService {
     const parseFunction = this.parseF[tagName] || this.parseElement;
 
     return parseFunction.call(this, xml);
+  }
+
+  private parseApp(xml: XMLElement) {
+    return this.apparatusEntriesParser.parseAppEntry(xml);
   }
 
   public parseText(xml: XMLElement): TextData {
