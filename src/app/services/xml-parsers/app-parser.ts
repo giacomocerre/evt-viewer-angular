@@ -75,7 +75,6 @@ export class LemmaParser extends EmptyParser implements Parser<XMLElement> {
     }
 }
 
-
 export class AppParser extends EmptyParser implements Parser<XMLElement> {
     private noteTagName = 'note';
     private readingTagName = 'rdg';

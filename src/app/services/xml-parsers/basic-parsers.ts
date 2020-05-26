@@ -9,7 +9,6 @@ export class EmptyParser {
     constructor(parseFn: ParseFn) { this.genericParse = parseFn; }
 }
 
-
 export class AttributeParser extends EmptyParser implements Parser<XMLElement> {
     parse(data: HTMLElement): AttributesData {
         return Array.from(data.attributes)

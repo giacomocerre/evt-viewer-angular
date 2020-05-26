@@ -10,7 +10,6 @@ import { createParser, Parser, ParseResult } from './parser-models';
 type SupportedTagNames = 'app' | 'event' | 'geogname' | 'lb' | 'note' | 'orgname' | 'p' | 'persname' | 'placename' | 'ptr' |
     'person' | 'personGrp' | 'place' | 'org';
 
-// tslint:disable-next-line: no-any
 export const parseF: { [T in SupportedTagNames]: Parser<XMLElement> } = {
     event: createParser(NamedEntityRefParser, parse),
     geogname: createParser(NamedEntityRefParser, parse),
@@ -26,7 +25,7 @@ export const parseF: { [T in SupportedTagNames]: Parser<XMLElement> } = {
     personGrp: createParser(PersonGroupParser, parse),
     place: createParser(PlaceParser, parse),
     org: createParser(OrganizationParser, parse),
-    // event: createParser(EventParser), // check event parser
+    // event: createParser(EventParser), // TODO: check event parser
 };
 
 export function parse(xml: XMLElement): ParseResult<GenericElementData> {
