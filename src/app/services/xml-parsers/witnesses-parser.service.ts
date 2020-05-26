@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { parse } from '.';
 import { Description, Witness, WitnessesData, WitnessGroup, XMLElement } from '../../models/evt-models';
 import { isNestedInElem, xpath } from '../../utils/dom-utils';
 import { arrayToMap } from '../../utils/js-utils';
 import { replaceNotWordChar } from '../../utils/xml-utils';
+import { AttributeParser } from './basic-parsers';
 import { GenericParserService } from './generic-parser.service';
+import { createParser, getID } from './parser-models';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +16,7 @@ export class WitnessesParserService {
   private witTagName = 'witness';
   private witNameAttr = 'type="siglum"';
   private groupTagName = 'head';
+  private attributeParser = createParser(AttributeParser, parse);
 
   constructor(
     private genericParserService: GenericParserService,
@@ -42,10 +46,12 @@ export class WitnessesParserService {
   }
 
   private parseWitness(wit: XMLElement): Witness {
+    const id = getID(wit);
+
     return {
-      id: wit.getAttribute('xml:id') || xpath(wit),
-      name: this.parseWitnessName(wit) || wit.getAttribute('xml:id') || xpath(wit),
-      attributes: this.genericParserService.parseAttributes(wit),
+      id,
+      name: this.parseWitnessName(wit) || id,
+      attributes: this.attributeParser.parse(wit),
       content: this.parseWitnessContent(wit),
       groupId: this.parseParentGroupId(wit),
     };
@@ -80,7 +86,7 @@ export class WitnessesParserService {
     return {
       id: list.getAttribute('xml:id') || xpath(list),
       name: this.parseGroupName(list) || replaceNotWordChar(list.getAttribute('xml:id')) || xpath(list),
-      attributes: this.genericParserService.parseAttributes(list),
+      attributes: this.attributeParser.parse(list),
       witnesses: this.parseGroupWitnesses(list),
       groupId: this.parseParentGroupId(list),
     };

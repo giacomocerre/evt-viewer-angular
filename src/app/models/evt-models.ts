@@ -1,5 +1,18 @@
+import { Type } from '@angular/core';
+import { ParseResult } from '../services/xml-parsers/parser-models';
 import { Map } from '../utils/js-utils';
-import { GenericElementData, NoteData } from './parsed-elements';
+
+export type ParsedElement = HTMLData | TextData | GenericElementData | CommentData | NoteData | NamedEntitiesList | LbData | AttributesData
+    | NamedEntityRefData;
+
+export class GenericElementData {
+    // tslint:disable-next-line: no-any
+    type: Type<any>;
+    path?: string;
+    class?: string;
+    attributes: AttributesData;
+    content: Array<ParseResult<GenericElementData>>;
+}
 
 export type XMLElement = HTMLElement;
 export type OriginalEncodingNodeType = XMLElement;
@@ -13,7 +26,7 @@ export interface PageData {
     id: string;
     label: string;
     originalContent: OriginalEncodingNodeType[];
-    parsedContent: GenericElementData[];
+    parsedContent: Array<ParseResult<GenericElementData>>;
 }
 
 export interface NamedEntities {
@@ -40,9 +53,7 @@ export interface NamedEntities {
     };
 }
 
-export interface AttributesData {
-    [key: string]: string;
-}
+export interface AttributesData { [key: string]: string; }
 
 export interface OriginalEncodingData {
     originalEncoding: OriginalEncodingNodeType;
@@ -73,7 +84,7 @@ export type NamedEntityLabel = string;
 
 export class NamedEntityInfo extends GenericElementData {
     label: string;
-    content: Array<GenericElementData | NamedEntitiesList>;
+    // content: Array<GenericElementData | NamedEntitiesList>;
 }
 
 export interface NamedEntityOccurrence {
@@ -96,7 +107,7 @@ export class Relation extends GenericElementData {
     relationType?: string;
 }
 
-export type Description = GenericElementData[];
+export type Description = Array<ParseResult<GenericElementData>>;
 
 export class NamedEntityRefData extends GenericElementData {
     entityId: string;
@@ -112,7 +123,7 @@ export interface Witness {
     id: string;
     name: GenericElementData[];
     attributes: AttributesData;
-    content: GenericElementData[];
+    content: Array<ParseResult<GenericElementData>>;
     groupId: string;
 }
 
@@ -142,3 +153,30 @@ export interface GridItem {
     name: string;
     active: boolean;
 }
+
+export type HTMLData = GenericElementData & {
+    content: OriginalEncodingNodeType[];
+};
+
+export class TextData extends GenericElementData {
+    text: string;
+}
+export type NoteLayout = 'popover' | 'plain-text';
+export class NoteData extends GenericElementData {
+    noteLayout: NoteLayout;
+    noteType: string;
+    exponent: string;
+}
+
+export class ParagraphData extends GenericElementData {
+    n: string;
+}
+
+export class LbData extends GenericElementData {
+    id: string;
+    n?: string;
+    facs?: string; // Needed to handle ITL
+    rend?: string;
+}
+
+export type CommentData = GenericElementData;

@@ -3,7 +3,7 @@ import { Component, ComponentRef, Input, OnDestroy, ViewChild, ViewContainerRef 
 import { AttributesMap } from 'ng-dynamic-component';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
-import { GenericElementData } from 'src/app/models/parsed-elements';
+import { GenericElementData } from 'src/app/models/evt-models';
 import { EntitiesSelectService } from 'src/app/services/entities-select.service';
 import { ComponentRegisterService } from '../../services/component-register.service';
 import { EntitiesSelectItem } from '../entities-select/entities-select.component';

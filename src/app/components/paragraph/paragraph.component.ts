@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { ParagraphData } from 'src/app/models/evt-models';
 import { HighlightableComponent } from '../../highlightable/highlightable.component';
-import { ParagraphData } from '../../models/parsed-elements';
 import { register } from '../../services/component-register.service';
 
 @Component({

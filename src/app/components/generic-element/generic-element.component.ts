@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { GenericElementData } from 'src/app/models/evt-models';
 import { HighlightableComponent } from '../../highlightable/highlightable.component';
-import { GenericElementData } from '../../models/parsed-elements';
 import { register } from '../../services/component-register.service';
 
 @Component({

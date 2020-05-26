@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TextData } from '../../models/parsed-elements';
+import { TextData } from 'src/app/models/evt-models';
 import { register } from '../../services/component-register.service';
 
 @Component({

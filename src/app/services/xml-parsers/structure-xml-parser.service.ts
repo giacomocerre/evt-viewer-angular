@@ -65,7 +65,9 @@ export class StructureXmlParserService {
           id: `page_${new Date().getTime()}`,
           label: 'Main Text',
           originalContent: content as XMLElement[],
-          parsedContent: content.map(child => this.genericParserService.parse(child as XMLElement)).filter(c => !!c.content),
+          parsedContent: content.map(child => this.genericParserService.parse(child as XMLElement))
+            // tslint:disable-next-line: no-string-literal
+            .filter(c => !!c['content']), // TODO: FIXME: fix property access
         };
         pages[page.id] = page;
         pagesIndexes.push(page.id);

@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
-import { NoteData } from '../../models/parsed-elements';
+import { NoteData } from 'src/app/models/evt-models';
 import { register } from '../../services/component-register.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { LbData } from '../../models/parsed-elements';
+import { LbData } from 'src/app/models/evt-models';
 import { register } from '../../services/component-register.service';
 
 @register(LbData)
