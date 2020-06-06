@@ -65,6 +65,8 @@ import { ReadingTextComponent } from './view-modes/reading-text/reading-text.com
 import { TextSourcesComponent } from './view-modes/text-sources/text-sources.component';
 import { TextTextComponent } from './view-modes/text-text/text-text.component';
 import { TextVersionsComponent } from './view-modes/text-versions/text-versions.component';
+import { ApparatusEntryComponent } from './components/apparatus-entry/apparatus-entry.component';
+import { LemmaComponent } from './components/lemma/lemma.component';
 
 const routes: Routes = [
 ];
@@ -76,6 +78,7 @@ export function initializeApp(appConfig: AppConfig) {
 @NgModule({
   declarations: [
     AppComponent,
+    ApparatusEntryComponent,
     CollationComponent,
     ContentViewerComponent,
     EditionLevelSelectorComponent,
@@ -89,6 +92,7 @@ export function initializeApp(appConfig: AppConfig) {
     ImagePanelComponent,
     ImageTextComponent,
     LbComponent,
+    LemmaComponent,
     MainHeaderComponent,
     MainMenuComponent,
     ManuscriptThumbnailsViewerComponent,
@@ -155,8 +159,10 @@ export function initializeApp(appConfig: AppConfig) {
     AppComponent,
   ],
   entryComponents: [
+    ApparatusEntryComponent,
     EvtInfoComponent,
     GlobalListsComponent,
+    LemmaComponent,
     NamedEntitiesListComponent,
     NamedEntityComponent,
     NamedEntityDetailComponent,

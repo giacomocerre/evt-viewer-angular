@@ -21,6 +21,7 @@ export const parseF: { [T in SupportedTagNames]: Parser<XMLElement> } = {
     placename: createParser(NamedEntityRefParser, parse),
     ptr: createParser(PtrParser, parse),
     app: createParser(AppParser, parse),
+    //lem: createParser(LemmaParser, parse),
     person: createParser(PersonParser, parse),
     personGrp: createParser(PersonGroupParser, parse),
     place: createParser(PlaceParser, parse),

@@ -64,7 +64,7 @@ export class RdgParser extends EmptyParser implements Parser<XMLElement> {
     }
 }
 
-export class LemmaParser extends EmptyParser implements Parser<XMLElement> {
+export class LemmaParser extends RdgParser implements Parser<XMLElement> {
     rdgParser = createParser(RdgParser, this.genericParse);
 
     public parse(rdg: XMLElement): Reading {
@@ -77,6 +77,7 @@ export class LemmaParser extends EmptyParser implements Parser<XMLElement> {
 
 export class AppParser extends EmptyParser implements Parser<XMLElement> {
     private noteTagName = 'note';
+    private lemmaTagName = 'lem';
     private readingTagName = 'rdg';
 
     attributeParser = createParser(AttributeParser, this.genericParse);
@@ -106,7 +107,7 @@ export class AppParser extends EmptyParser implements Parser<XMLElement> {
     }
 
     private parseAppReadings(appEntry: XMLElement): Reading[] {
-        return Array.from(appEntry.querySelectorAll(this.readingTagName))
+        return Array.from(appEntry.querySelectorAll(`${this.readingTagName}, ${this.lemmaTagName}`))
             .map((rdg: XMLElement) => this.rdgParser.parse(rdg));
     }
 }
