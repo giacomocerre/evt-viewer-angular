@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { EditionLevel } from 'src/app/app.config';
 import { Page } from 'src/app/models/evt-models';
 import { EVTStatusService } from 'src/app/services/evt-status.service';
+import { EvtIconInfo } from 'src/app/ui-components/icon/icon.component';
 
 @Component({
   selector: 'evt-text-versions',
@@ -26,6 +27,24 @@ export class TextVersionsComponent implements OnInit {
   public currentEditionLevel$ = this.evtStatusService.currentStatus$.pipe(
     map(({ editionLevels }) => editionLevels[0]),
   );
+
+  public get addVersionBtn(): { label: string, additionalClasses: string, title: string, icon?: EvtIconInfo } {
+    if (this.versions.length > 0) {
+      return {
+        label: '',
+        title: 'addVersion',
+        additionalClasses: 'btn-floating rounded-circle',
+        icon: { iconSet: 'fas', icon: 'plus' },
+      };
+    }
+
+    return {
+      label: 'addVersion',
+      title: '',
+      additionalClasses: 'btn-floating',
+      icon: { iconSet: 'fas', icon: 'plus' },
+    };
+  }
 
   constructor(
     private evtStatusService: EVTStatusService,

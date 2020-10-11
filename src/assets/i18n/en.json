@@ -48,5 +48,7 @@
     "words": "words",
     "missingS": "missing",
     "missingP": "missing",
-    "omitted": "omitted"
+    "omitted": "omitted",
+    "addVersion": "Add version",
+    "addWitness": "Add witness"
 }
