@@ -2,7 +2,7 @@ import { Comment, GenericElement, HTML, XMLElement } from '../../models/evt-mode
 import { AppParser, RdgParser } from './app-parser';
 import {
     DamageParser, ElementParser, GapParser, LBParser, NoteParser, ParagraphParser,
-    PtrParser, SuppliedParser, TextParser, VerseParser,
+    PtrParser, SuppliedParser, TextParser, VerseParser, WordParser,
 } from './basic-parsers';
 import { CharParser, GlyphParser, GParser } from './character-declarations-parser';
 import { ChoiceParser } from './choice-parser';
@@ -16,7 +16,7 @@ import { createParser, Parser, ParseResult } from './parser-models';
 
 type SupportedTagNames = 'app' | 'char' | 'choice' | 'damage' | 'event' | 'g' | 'gap' | 'geogname' | 'glyph' | 'graphic' | 'l' | 'lb' |
     'lem' | 'note' | 'orgname' | 'p' | 'persname' | 'placename' | 'ptr' | 'person' | 'personGrp' | 'place' | 'org' | 'rdg' | 'surface' |
-    'supplied' | 'surplus' | 'zone';
+    'supplied' | 'surplus' | 'w' | 'zone';
 
 export const parseF: { [T in SupportedTagNames]: Parser<XMLElement> } = {
     app: createParser(AppParser, parse),
@@ -48,6 +48,7 @@ export const parseF: { [T in SupportedTagNames]: Parser<XMLElement> } = {
     supplied: createParser(SuppliedParser, parse),
     surplus: createParser(SurplusParser, parse),
     zone: createParser(ZoneParser, parse),
+    w: createParser(WordParser, parse),
 };
 
 export function parse(xml: XMLElement): ParseResult<GenericElement> {

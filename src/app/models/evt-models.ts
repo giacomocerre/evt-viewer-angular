@@ -307,3 +307,7 @@ export class Gap extends GenericElement {
     unit?: string;
     extent?: string;
 }
+
+export class Word extends GenericElement {
+    lemma?: string;
+}
