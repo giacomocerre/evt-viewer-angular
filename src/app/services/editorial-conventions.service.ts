@@ -4,7 +4,7 @@ import { AppConfig } from '../app.config';
 import { EditorialConvention, EditorialConventionLayouts } from '../models/evt-models';
 
 // List of handled editorial convention
-export type EditorialConventionDefaults = 'damage' | 'surplus'; // Add here key of handled EVT defaults
+export type EditorialConventionDefaults = 'damage' | 'sicCrux' | 'surplus'; // Add here key of handled EVT defaults
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,20 @@ export class EditorialConventionsService {
         style: {
           'background-color': 'rgba(193, 193, 193, 0.7)',
         },
+      },
+    },
+    sicCrux: {
+      diplomatic: {
+        pre: '&dagger;',
+        post: '&dagger;',
+      },
+      interpretative: {
+        pre: '&dagger;',
+        post: '&dagger;',
+      },
+      critical: {
+        pre: '&dagger;',
+        post: '&dagger;',
       },
     },
     surplus: {
