@@ -307,3 +307,8 @@ export class Gap extends GenericElement {
     unit?: string;
     extent?: string;
 }
+
+export type SicType = 'crux'; // sic types supported in specific ways
+export class Sic extends GenericElement {
+    sicType?: SicType | string;
+}
