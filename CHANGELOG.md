@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated to Angular 9
 
 ### Added
+- Multiple line words normalization in interpretative and critical edition
+- Word visualization
 - Known and unknown gaps. Support for "char", "line" and "word" as unit
 - Critical text visualization
 - Surplus visualization
