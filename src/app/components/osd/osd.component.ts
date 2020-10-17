@@ -7,6 +7,8 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { uuid } from '../../utils/js-utils';
 
+import * as Annotorious from '@recogito/annotorious-openseadragon';
+
 declare var OpenSeadragon;
 
 interface OsdAnnotation {
@@ -137,6 +139,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
   annotationsHandle: OsdAnnotationAPI;
 
   private subscriptions: Subscription[] = [];
+  
 
   constructor(
     private http: HttpClient,
@@ -144,6 +147,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.push(this.pageChange.pipe(
       distinctUntilChanged(),
     ).subscribe((x) => {
+      this.activateAnnotator()
       if (!!this.viewer) {
         this.viewer.goToPage(x - 1);
       }
@@ -187,6 +191,11 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
           this.pageChange.next(page + 1);
         });
       }));
+  }
+
+  activateAnnotator(){
+    const anno = Annotorious(this.viewer, {});
+    console.log(anno)
   }
 
   ngOnDestroy(): void {
