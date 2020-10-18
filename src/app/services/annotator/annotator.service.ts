@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import * as Annotorious from '@recogito/annotorious-openseadragon';
 
 @Injectable({
   providedIn: 'root',
@@ -11,5 +12,15 @@ export class AnnotatorService {
     const selection = window.getSelection();
     this.textSelection.next(selection);
     console.log(this.textSelection);
+  }
+
+  getImageSelection(viewer){
+    const config = {};
+    let annotationType = 'polygon'
+    let anno = Annotorious(viewer, config);
+    anno.setDrawingTool(annotationType);
+    anno.on('createAnnotation', function(a) {
+      console.log('created', a);
+    });
   }
 }

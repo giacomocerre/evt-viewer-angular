@@ -28,6 +28,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@recogito/annotorious-openseadragon/dist/annotorious.min.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/prismjs/themes/prism.css",
               "src/styles.scss"
@@ -36,6 +37,7 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/openseadragon/build/openseadragon/openseadragon.js",
+              "node_modules/@recogito/annotorious-openseadragon/dist/openseadragon-annotorious.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.js",
               "node_modules/prismjs/prism.js"
             ]

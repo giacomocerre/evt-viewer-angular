@@ -6,8 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { uuid } from '../../utils/js-utils';
-
-import * as Annotorious from '@recogito/annotorious-openseadragon';
+import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 
 declare var OpenSeadragon;
 
@@ -143,11 +142,12 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
+    private anntator: AnnotatorService
   ) {
     this.subscriptions.push(this.pageChange.pipe(
       distinctUntilChanged(),
     ).subscribe((x) => {
-      this.activateAnnotator()
+      this.anntator.getImageSelection(this.viewer)
       if (!!this.viewer) {
         this.viewer.goToPage(x - 1);
       }
@@ -175,6 +175,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
 
     this.subscriptions.push(combineLatest([this.optionsChange, this.tileSources])
       .subscribe(([_, tileSources]) => {
+        
         if (!!tileSources) {
           this.viewer = OpenSeadragon({
             ...commonOptions,
@@ -186,17 +187,23 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
             ...this.options,
           });
         }
-
         this.viewer.addHandler('page', ({ page }) => {
           this.pageChange.next(page + 1);
         });
+
+        this.anntator.getImageSelection(this.viewer)
       }));
   }
 
-  activateAnnotator(){
-    const anno = Annotorious(this.viewer, {});
-    console.log(anno)
-  }
+
+  // makeAnnotation(viewer){
+  //   const config = {};
+  //   let anno = Annotorious(viewer, config);
+  //   anno.setDrawingTool('rect');
+  //   anno.on('createAnnotation', function(a) {
+  //     console.log('created', a);
+  //   });
+  // }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
