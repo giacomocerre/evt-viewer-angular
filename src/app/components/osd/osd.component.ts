@@ -195,16 +195,6 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
       }));
   }
 
-
-  // makeAnnotation(viewer){
-  //   const config = {};
-  //   let anno = Annotorious(viewer, config);
-  //   anno.setDrawingTool('rect');
-  //   anno.on('createAnnotation', function(a) {
-  //     console.log('created', a);
-  //   });
-  // }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
   }
