@@ -1,0 +1,25 @@
+.evt-adder-annotation {
+    display: block;
+    position: absolute;
+    z-index: 999;
+}
+
+.evt-adder-toolbar {
+    all: initial;
+    -webkit-animation-duration: 80ms;
+    animation-duration: 80ms;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    box-sizing: border-box;
+    direction: ltr;
+    position: absolute;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 4px;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,.25);
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+}
