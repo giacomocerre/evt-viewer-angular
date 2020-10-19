@@ -6,21 +6,23 @@ import * as Annotorious from '@recogito/annotorious-openseadragon';
   providedIn: 'root',
 })
 export class AnnotatorService {
-  textSelection: Subject<object> = new Subject();
+  textSelection = new Subject<object>();
+  imageSelection = new Subject<object>();
 
   getTextSelection() {
     const selection = window.getSelection();
     this.textSelection.next(selection);
-    console.log(this.textSelection);
   }
 
   getImageSelection(viewer){
-    const config = {};
-    let annotationType = 'polygon'
-    let anno = Annotorious(viewer, config);
-    anno.setDrawingTool(annotationType);
-    anno.on('createAnnotation', function(a) {
-      console.log('created', a);
+    const selection = Annotorious(viewer,{})
+    this.imageSelection.next(selection);
+  //   const config = {};
+  //   const anno = Annotorious(viewer, config);
+  //   let annotationType = 'polygon'
+  //   anno.setDrawingTool(annotationType);
+    selection.on('createAnnotation', function(a) {
+      console.log(a)
     });
   }
 }
