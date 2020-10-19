@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import * as Annotorious from '@recogito/annotorious-openseadragon';
+import { Annotation } from 'src/app/models/evt-models';
+import { IdbService } from '../idb.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,21 +9,30 @@ import * as Annotorious from '@recogito/annotorious-openseadragon';
 export class AnnotatorService {
   textSelection = new Subject<object>();
   imageSelection = new Subject<object>();
+  annotationsList: Array<Annotation> = [];
+
+  constructor(private db: IdbService){}
 
   getTextSelection() {
-    const selection = window.getSelection();
-    this.textSelection.next(selection);
+    this.textSelection.next(window.getSelection());
   }
 
   getImageSelection(viewer){
-    const selection = Annotorious(viewer,{})
-    this.imageSelection.next(selection);
+    this.imageSelection.next(viewer)
   //   const config = {};
   //   const anno = Annotorious(viewer, config);
   //   let annotationType = 'polygon'
   //   anno.setDrawingTool(annotationType);
-    selection.on('createAnnotation', function(a) {
-      console.log(a)
+    // selection.on('createAnnotation', function(a) {
+    //   console.log(a)
+    // });
+  }
+
+  addAnnotation(annotation: Annotation){
+    this.db
+    .add(annotation)
+    .then((annotationID) => {
+      this.annotationsList = [...this.annotationsList, Object.assign({}, annotation, { annotationID })];
     });
   }
 }
