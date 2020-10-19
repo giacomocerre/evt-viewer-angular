@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
-
-interface AnnotationID {
-  annotationId: number;
-}
+import { AnnotationID } from '../models/evt-models';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class IdbService extends Dexie {
-  public db: Dexie.Table<AnnotationID, number>;
+  public db: Dexie.Table<AnnotationID ,number>;
   constructor() {
     super('EVT-Annotator');
     this.version(1).stores({
