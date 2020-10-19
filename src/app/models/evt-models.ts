@@ -267,3 +267,44 @@ export class Choice extends GenericElement {
 export class Verse extends GenericElement {
     n: string;
 }
+
+export interface Annotation {
+    "@context": string;
+    id: string;
+    type: string;
+    created: string;
+    modified?: string;
+    body: AnnotationBody;
+    targer: AnnotatorTarget;
+}
+
+export interface AnnotationBody {
+    type: string;
+    value: string;
+    format: string;
+    language?: string;
+    purpose?: string;
+}
+
+export interface AnnotatorTarget {
+    source: string;
+    selector: AnnotatorSelector[]
+}
+
+export interface AnnotatorSelector {
+    type: string;
+    exact?: string;
+    prefix?: string;
+    suffix?: string;
+    start?: string;
+    end?: string;
+    value?: string;
+    startSelector?: {
+        type: string;
+        value: string;
+    }
+    endSelector?: {
+        type: string;
+        value: string;
+    }
+}
