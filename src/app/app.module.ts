@@ -29,6 +29,7 @@ import { EntitiesSelectComponent } from './components/entities-select/entities-s
 import { GComponent } from './components/g/g.component';
 import { GenericElementComponent } from './components/generic-element/generic-element.component';
 import { GlobalListsComponent } from './components/global-lists/global-lists.component';
+import { ImageAnnotatorComponent } from './components/annotator/image-annotator/image-annotator.component';
 import { LbComponent } from './components/lb/lb.component';
 import { ManuscriptThumbnailsViewerComponent } from './components/manuscript-thumbnails-viewer/manuscript-thumbnails-viewer.component';
 import { NamedEntitiesListComponent } from './components/named-entities-list/named-entities-list.component';
@@ -43,6 +44,7 @@ import { OsdComponent } from './components/osd/osd.component';
 import { PageSelectorComponent } from './components/page-selector/page-selector.component';
 import { PageComponent } from './components/page/page.component';
 import { ParagraphComponent } from './components/paragraph/paragraph.component';
+import { TextAnnotatorComponent } from './components/annotator/text-annotator/text-annotator.component';
 import { TextComponent } from './components/text/text.component';
 import { VerseComponent } from './components/verse/verse.component';
 import { AnnotatorDirective } from './directives/annotator.directive';
@@ -97,6 +99,7 @@ export function initializeApp(appConfig: AppConfig) {
     GComponent,
     GenericElementComponent,
     GlobalListsComponent,
+    ImageAnnotatorComponent,
     HighlightDirective,
     HtmlAttributesDirective,
     HumanizePipe,
@@ -125,6 +128,7 @@ export function initializeApp(appConfig: AppConfig) {
     ShortcutsComponent,
     SourcesPanelComponent,
     StartsWithPipe,
+    TextAnnotatorComponent,
     TextComponent,
     TextPanelComponent,
     TextSourcesComponent,
@@ -133,7 +137,7 @@ export function initializeApp(appConfig: AppConfig) {
     VerseComponent,
     VersionPanelComponent,
     WitnessPanelComponent,
-    XmlBeautifyPipe,
+    XmlBeautifyPipe
   ],
   imports: [
     AppRoutingModule,
