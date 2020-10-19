@@ -268,6 +268,10 @@ export class Verse extends GenericElement {
     n: string;
 }
 
+export interface AnnotationID extends Annotation {
+    annotationId: number;
+  }
+
 export interface Annotation {
     "@context": string;
     id: string;
@@ -275,7 +279,7 @@ export interface Annotation {
     created: string;
     modified?: string;
     body: AnnotationBody;
-    targer: AnnotatorTarget;
+    target: AnnotatorTarget;
 }
 
 export interface AnnotationBody {
