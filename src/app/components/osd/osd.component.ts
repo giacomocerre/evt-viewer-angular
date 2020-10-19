@@ -142,12 +142,12 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private anntator: AnnotatorService
+    private annotator: AnnotatorService
   ) {
     this.subscriptions.push(this.pageChange.pipe(
       distinctUntilChanged(),
     ).subscribe((x) => {
-      this.anntator.getImageSelection(this.viewer)
+      this.annotator.getImageSelection(this.viewer)
       if (!!this.viewer) {
         this.viewer.goToPage(x - 1);
       }
@@ -191,7 +191,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
           this.pageChange.next(page + 1);
         });
 
-        this.anntator.getImageSelection(this.viewer)
+        this.annotator.getImageSelection(this.viewer)
       }));
   }
 
