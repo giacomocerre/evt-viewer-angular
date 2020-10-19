@@ -1,0 +1,5 @@
+<div>
+    <evt-button label="Active" (btnClick)="initializeImgAnnotation()"></evt-button>
+    <evt-button [iconRight]="{icon: 'vector-square'}" label="Rectangle" (btnClick)="setDrawType('rect')"></evt-button>
+    <evt-button [iconRight]="{icon: 'draw-polygon'}" label="Polygon" (btnClick)="setDrawType('polygon')"></evt-button>
+</div>
