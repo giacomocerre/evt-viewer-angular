@@ -292,6 +292,7 @@ export interface AnnotationBody {
 
 export interface AnnotatorTarget {
     source: string;
+    type: string;
     selector: AnnotatorSelector[]
 }
 
