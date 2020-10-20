@@ -46,7 +46,7 @@ export class ImageAnnotatorComponent implements OnInit {
       created: new Date().toISOString(),
       body: {
         type:"TextualBody",
-        value:a.body.value,
+        value:a.body[0].value,
         format:"text/html",
         purpose: a.body[0].purpose
       },
