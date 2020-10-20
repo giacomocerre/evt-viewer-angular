@@ -19,13 +19,6 @@ export class AnnotatorService {
 
   getImageSelection(viewer){
     this.imageSelection.next(viewer)
-  //   const config = {};
-  //   const anno = Annotorious(viewer, config);
-  //   let annotationType = 'polygon'
-  //   anno.setDrawingTool(annotationType);
-    // selection.on('createAnnotation', function(a) {
-    //   console.log(a)
-    // });
   }
 
   addAnnotation(annotation: Annotation){
