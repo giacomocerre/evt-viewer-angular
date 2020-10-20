@@ -51,6 +51,7 @@ export class TextAnnotatorComponent implements OnInit {
       },
       target: {
         source: window.location.href,
+        type:"text",
         selector: [
           {
             type:'TextQuoteSelector',
