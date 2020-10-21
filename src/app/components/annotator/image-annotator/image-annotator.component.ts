@@ -27,11 +27,15 @@ export class ImageAnnotatorComponent implements OnInit {
          this.createAnnotation(a)
       });
       this.db.getAll().then((annotations: Array<AnnotationID>) => {
-        this.anno.setAnnotations(annotations);
+        if((Array.from(document.getElementsByClassName("a9s-annotation")).length <= 0)){
+          this.anno.setAnnotations(annotations);
+        }
       });
+
     })
-  
   }
+
+  
 
   setDrawType(type){
     this.anno.setDrawingEnabled(true)

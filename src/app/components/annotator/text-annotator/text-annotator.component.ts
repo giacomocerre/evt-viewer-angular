@@ -11,7 +11,7 @@ import { textAnnotationSettings } from 'src/app/utils/annotation-utils';
 export class TextAnnotatorComponent implements OnInit {
   public showAdder: boolean = false;
   public selectedText: string;
-  public settings = {};
+  public settings = {adder: {x:0,y:0}};
 
   constructor(
     private annotator: AnnotatorService,

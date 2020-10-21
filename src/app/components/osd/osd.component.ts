@@ -192,9 +192,13 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
         });
 
         this.annotator.getImageSelection(this.viewer)
+        this.annotator.anchoringImage(tileSources[0]["@id"])
+        this.pageChange.pipe(
+          distinctUntilChanged(),
+        ).subscribe((x) => this.annotator.anchoringImage(tileSources[x-1]["@id"]))
+
       }));
   }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
   }

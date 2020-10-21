@@ -28,10 +28,10 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@recogito/annotorious-openseadragon/dist/annotorious.min.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/prismjs/themes/prism.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@recogito/annotorious-openseadragon/dist/annotorious.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
