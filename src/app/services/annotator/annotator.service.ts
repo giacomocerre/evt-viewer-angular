@@ -10,7 +10,7 @@ export class AnnotatorService {
   textSelection = new Subject<object>();
   imageSelection = new Subject<object>();
   annotationsList: Array<Annotation> = [];
-  osdCurrentPage: string;
+  osdCurrentPage = new Subject<string>();
 
   constructor(private db: IdbService){}
 
@@ -18,22 +18,28 @@ export class AnnotatorService {
     this.textSelection.next(window.getSelection());
   }
 
-  getImageSelection(viewer){
+  getImageSelection(viewer, page){
+    this.osdCurrentPage.next(page)
     this.imageSelection.next(viewer)
   }
 
   anchoringImage(page){
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
+      console.log(annotations[1].target.selector)
       const g_draw = Array.from(document.getElementsByClassName("a9s-annotation"));
       g_draw.forEach((g,i) => {
         if( annotations[i] !== undefined){
           if(page === annotations[i].target.source) {
-            Array.from(g.childNodes).map((child: HTMLElement) => {
-              child.setAttribute("style", "fill:red; fill-opacity: .2")
+            Array.from(g.childNodes).map((g_child: HTMLElement) => {
+              g_child.setAttribute("points", annotations[i].target.selector[0].value.split('\"')[1])
+              g_child.setAttribute("width", annotations[i].target.selector[0].value.split(',')[2])
+              g_child.setAttribute("heigth", annotations[i].target.selector[0].value.split(',')[3])
             })
           }else{
-            Array.from(g.childNodes).map((child: HTMLElement) => {
-              child.setAttribute("style", "stroke-width: 0px; stroke: transparent")
+            Array.from(g.childNodes).map((g_child: HTMLElement) => {
+              g_child.removeAttribute("points")
+              g_child.removeAttribute("heigth")
+              g_child.removeAttribute("width")
             })
           }
         }

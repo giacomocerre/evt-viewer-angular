@@ -3,3 +3,13 @@
     right: 0;
     z-index: 1;
 }
+
+.a9s-inner {
+    fill: red !important;
+    fill-opacity: .2 !important;
+}
+
+.a9s-outer{
+    stroke: rgba(0,0,0,0.7) !important;
+    stroke-width: 3px !important;
+}

@@ -147,7 +147,6 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.push(this.pageChange.pipe(
       distinctUntilChanged(),
     ).subscribe((x) => {
-      this.annotator.getImageSelection(this.viewer)
       if (!!this.viewer) {
         this.viewer.goToPage(x - 1);
       }
@@ -191,7 +190,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
           this.pageChange.next(page + 1);
         });
 
-        this.annotator.getImageSelection(this.viewer)
+        this.annotator.getImageSelection(this.viewer, tileSources[0]["@id"])
         this.annotator.anchoringImage(tileSources[0]["@id"])
         this.pageChange.pipe(
           distinctUntilChanged(),

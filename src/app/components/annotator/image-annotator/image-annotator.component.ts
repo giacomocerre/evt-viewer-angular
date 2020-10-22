@@ -11,13 +11,15 @@ import { IdbService } from 'src/app/services/idb.service';
 })
 export class ImageAnnotatorComponent implements OnInit {
   public anno;
-  public annotation;
+  public annotationContent = document.getElementsByClassName("a9s-annotationlayer");
+  public annotationDraws = document.getElementsByClassName("a9s-annotation");
+  public viewNotes: boolean = false
 
   constructor(
     private annotator: AnnotatorService,
     private db: IdbService
   ) { }
-
+  
   ngOnInit(): void {
     this.annotator.imageSelection.subscribe((viewer) => {
       viewer
@@ -27,22 +29,42 @@ export class ImageAnnotatorComponent implements OnInit {
          this.createAnnotation(a)
       });
       this.db.getAll().then((annotations: Array<AnnotationID>) => {
-        if((Array.from(document.getElementsByClassName("a9s-annotation")).length <= 0)){
-          this.anno.setAnnotations(annotations);
+        // this.annotator.getImageAnnotation(this.anno, annotations)
+        this.anno.setAnnotations(annotations)
+        this.annotator.osdCurrentPage.subscribe((page) => {
+          this.annotator.anchoringImage(page)
+        })
+        if((Array.from(this.annotationContent).length <= 1)){
+          this.toggleAnnotation(this.viewNotes)
         }
       });
+      Array.from(this.annotationDraws).map(g => {
+        Array.from(g.childNodes).map((child: HTMLElement) => {
+          child.onclick = function() {console.log("aa")}
 
+        })
+      })
     })
   }
 
-  
+  openNote(){
+    
+  }
+
+  toggleAnnotation(show){
+    this.viewNotes = show;
+    this.anno.setDrawingEnabled(show)
+    Array.from(this.annotationContent)[0].setAttribute("style", `display:${show ? "block": "none"}`)
+  }
 
   setDrawType(type){
-    this.anno.setDrawingEnabled(true)
+    console.log(this.anno)
+    this.toggleAnnotation(true);
     this.anno.setDrawingTool(type); 
   }
 
   createAnnotation(a) {
+    console.log(a.target.selector)
     const annotation: Annotation = {
       '@context': 'http:www.w3.org/ns/anno.jsonld',
       id:a.id,
