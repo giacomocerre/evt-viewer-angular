@@ -31,7 +31,7 @@
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/prismjs/themes/prism.css",
               "src/styles.scss",
-              "node_modules/@recogito/annotorious-openseadragon/dist/annotorious.min.css"
+              "src/assets/scss/annotorious.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

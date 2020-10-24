@@ -24,7 +24,6 @@ export class AnchoringService {
                 g_child.removeAttribute("points")
                 g_child.removeAttribute("heigth")
                 g_child.removeAttribute("width")
-                g_child.setAttribute("style", "fill:red; fill-opacity:.2")
             })
             annotations.filter( x => x.id === svg_id && x.target.source === page).map( anno => {
                 if(anno.target.selector[0].type === "FragmentSelector"){

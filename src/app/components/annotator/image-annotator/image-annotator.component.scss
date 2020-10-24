@@ -10,3 +10,17 @@
     stroke: rgba(0,0,0,0.7) !important;
     stroke-width: 3px !important;
 }
+
+.r6o-widget.comment:not(:first-of-type)::before {
+    content: ">";
+    float: left;
+    padding-left: 20px;
+    position: relative;
+    top: 7px;
+    box-sizing: border-box;
+    padding-top: 0;
+}
+
+.r6o-editor {
+    font-family: 'Junicode', serif!important;
+}
