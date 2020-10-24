@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Annotation } from 'src/app/models/evt-models';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
+import { IdbService } from 'src/app/services/idb.service';
 import { textAnnotationSettings } from 'src/app/utils/annotation-utils';
 
 @Component({
@@ -15,6 +16,7 @@ export class TextAnnotatorComponent implements OnInit {
 
   constructor(
     private annotator: AnnotatorService,
+    private db: IdbService
   ) { }
 
   ngOnInit(): void {
@@ -78,7 +80,7 @@ export class TextAnnotatorComponent implements OnInit {
         ]
       }
     }
-    this.annotator.addAnnotation(annotation)
+    this.db.add(annotation);
     this.showAdder = false;
   }
 

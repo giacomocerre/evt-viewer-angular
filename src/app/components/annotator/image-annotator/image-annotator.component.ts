@@ -10,9 +10,11 @@ import { IdbService } from 'src/app/services/idb.service';
   styleUrls: ['./image-annotator.component.scss']
 })
 export class ImageAnnotatorComponent implements OnInit {
+
   public anno;
   public annotationContent = document.getElementsByClassName("a9s-annotationlayer");
   public annotationDraws = document.getElementsByClassName("a9s-annotation");
+  public svgSelection= document.getElementsByClassName("a9s-selection");
   public viewNotes: boolean = false
 
   constructor(
@@ -23,43 +25,45 @@ export class ImageAnnotatorComponent implements OnInit {
   ngOnInit(): void {
     this.annotator.imageSelection.subscribe((viewer) => {
       viewer
-       ? (this.anno = Annotorious(viewer, {}))
-       : null
-       this.anno.on('createAnnotation', (a:Annotation) => {
+        ? (this.anno = Annotorious(viewer, {}))
+        : null
+      //creation
+      this.anno.on('createAnnotation', (a:Annotation) => {
          this.createAnnotation(a)
       });
-      this.db.getAll().then((annotations: Array<AnnotationID>) => {
-        // this.annotator.getImageAnnotation(this.anno, annotations)
-        this.anno.setAnnotations(annotations)
-        this.annotator.osdCurrentPage.subscribe((page) => {
-          this.annotator.anchoringImage(page)
-        })
-        if((Array.from(this.annotationContent).length <= 1)){
-          this.toggleAnnotation(this.viewNotes)
-        }
+      //update
+      this.anno.on('updateAnnotation', (annotation, {}) => {
+        this.db.update(annotation.id, annotation)
       });
-      Array.from(this.annotationDraws).map(g => {
-        Array.from(g.childNodes).map((child: HTMLElement) => {
-          child.onclick = function() {console.log("aa")}
-
-        })
-      })
-    })
+      //delete
+      this.anno.on('deleteAnnotation', (annotation) => {
+        this.db.remove(annotation.id)
+      });
+      //selection
+      this.anno.on('selectAnnotation', (annotation) => {
+        console.log('selected', annotation);
+      });
+      this.uploadImgAnnotation()
+    });
   }
 
-  openNote(){
-    
+  uploadImgAnnotation(){
+    this.db.getAll().then((annotations: Array<AnnotationID>) => {
+      this.anno.setAnnotations(annotations)
+      if((Array.from(this.annotationContent).length <= 1)){
+        this.toggleAnnotation(this.viewNotes)
+      }
+    });
   }
 
   toggleAnnotation(show){
     this.viewNotes = show;
-    this.anno.setDrawingEnabled(show)
     Array.from(this.annotationContent)[0].setAttribute("style", `display:${show ? "block": "none"}`)
   }
 
   setDrawType(type){
-    console.log(this.anno)
     this.toggleAnnotation(true);
+    this.anno.setDrawingEnabled(true)
     this.anno.setDrawingTool(type); 
   }
 
@@ -82,7 +86,8 @@ export class ImageAnnotatorComponent implements OnInit {
         selector: [a.target.selector]
       }
     }
-    this.annotator.addAnnotation(annotation)
+    //add
+    this.db.add(annotation);
     
   }
 

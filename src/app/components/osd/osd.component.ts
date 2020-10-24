@@ -7,6 +7,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { uuid } from '../../utils/js-utils';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 
 declare var OpenSeadragon;
 
@@ -142,6 +143,7 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
+    private anchoring: AnchoringService,
     private annotator: AnnotatorService
   ) {
     this.subscriptions.push(this.pageChange.pipe(
@@ -191,10 +193,10 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
         });
 
         this.annotator.getImageSelection(this.viewer, tileSources[0]["@id"])
-        this.annotator.anchoringImage(tileSources[0]["@id"])
+        this.anchoring.anchoringImage(tileSources[0]["@id"])
         this.pageChange.pipe(
           distinctUntilChanged(),
-        ).subscribe((x) => this.annotator.anchoringImage(tileSources[x-1]["@id"]))
+        ).subscribe((x) => this.anchoring.anchoringImage(tileSources[x-1]["@id"]))
 
       }));
   }
