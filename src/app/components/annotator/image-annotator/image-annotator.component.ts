@@ -3,6 +3,7 @@ import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 import * as Annotorious from '@recogito/annotorious-openseadragon';
 import { Annotation, AnnotationID } from 'src/app/models/evt-models';
 import { IdbService } from 'src/app/services/idb.service';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 
 @Component({
   selector: 'evt-image-annotator',
@@ -18,6 +19,7 @@ export class ImageAnnotatorComponent implements OnInit {
   public viewNotes: boolean = false
 
   constructor(
+    private anchoring: AnchoringService,
     private annotator: AnnotatorService,
     private db: IdbService
   ) { }
@@ -88,7 +90,7 @@ export class ImageAnnotatorComponent implements OnInit {
     }
     //add
     this.db.add(annotation);
-    
+    this.anchoring.anchoringImage(this.annotator.osdCurrentPage)
   }
 
 }

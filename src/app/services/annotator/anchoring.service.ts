@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 import { AnnotationID } from 'src/app/models/evt-models';
 import { IdbService } from '../idb.service';
+import { AnnotatorService } from './annotator.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnchoringService {
 
-  constructor(private db: IdbService){}
+  constructor(
+      private annotator: AnnotatorService,
+      private db: IdbService
+      ){}
 
   anchoringImage(page){
+    this.annotator.osdCurrentPage = page;
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
         const view = {rect:[], poly:[]}
         const g_draw = Array.from(document.getElementsByClassName("a9s-annotation"));
@@ -19,13 +24,14 @@ export class AnchoringService {
                 g_child.removeAttribute("points")
                 g_child.removeAttribute("heigth")
                 g_child.removeAttribute("width")
+                g_child.setAttribute("style", "fill:red; fill-opacity:.2")
             })
             annotations.filter( x => x.id === svg_id && x.target.source === page).map( anno => {
                 if(anno.target.selector[0].type === "FragmentSelector"){
                     view.rect.push({
                         g,
                         position: {
-                            width: anno.target.selector[0].value.split(',')[2],
+                            width: anno.target.selector[0].value.split(',')[2] ,
                             heigth: anno.target.selector[0].value.split(',')[3]
                         }
                     })
@@ -50,6 +56,7 @@ export class AnchoringService {
                 g_child.setAttribute("points", el.position.points)
             })
         })
+  
     })
   }
 }

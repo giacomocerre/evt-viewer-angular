@@ -1,12 +1,9 @@
 .evt-annotation-draw {
     position: absolute;
     right: 0;
+    top: 0px;
     z-index: 1;
-}
-
-.a9s-inner {
-    fill: red !important;
-    fill-opacity: .2 !important;
+    width: 30px;
 }
 
 .a9s-outer{

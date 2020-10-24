@@ -196,7 +196,8 @@ export class OsdComponent implements AfterViewInit, OnDestroy {
         this.anchoring.anchoringImage(tileSources[0]["@id"])
         this.pageChange.pipe(
           distinctUntilChanged(),
-        ).subscribe((x) => this.anchoring.anchoringImage(tileSources[x-1]["@id"]))
+        ).subscribe((x) => this.anchoring.anchoringImage(tileSources[x-1]["@id"]
+          ))
 
       }));
   }

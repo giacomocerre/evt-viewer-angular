@@ -1,6 +1,6 @@
 <evt-panel [closable]="true" [secondary]="true" (hide)="emitHide()">
     <div header-left>{{'pinboard' | translate}}</div>
-    <evt-pinboard content [types]="selectedPinTypes"></evt-pinboard>
+    <evt-pinboard content [types]="selectedPinTypes" evtAnnotator></evt-pinboard>
     <div footer>
         <ng-select 
             [items]="pinboardTypes$ | async" [multiple]="true" 
