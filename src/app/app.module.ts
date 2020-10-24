@@ -65,6 +65,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { HumanizePipe } from './pipes/humanize.pipe';
 import { StartsWithPipe } from './pipes/starts-with.pipe';
 import { XmlBeautifyPipe } from './pipes/xml-beautify.pipe';
+import { AnchoringService } from './services/annotator/anchoring.service';
 import { AnnotatorService } from './services/annotator/annotator.service';
 import { IdbService } from './services/idb.service';
 import { ThemesService } from './services/themes.service';
@@ -162,6 +163,7 @@ export function initializeApp(appConfig: AppConfig) {
     UiComponentsModule,
   ],
   providers: [
+    AnchoringService,
     AnnotatorService,
     AppConfig,
     {
