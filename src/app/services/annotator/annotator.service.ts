@@ -12,7 +12,7 @@ export class AnnotatorService {
   osdCurrentPage:string;;
 
   getTextSelection() {
-    this.textSelection.next(window.getSelection());
+    this.textSelection.next(document.getSelection());
   }
 
   getImageSelection(viewer, page){
