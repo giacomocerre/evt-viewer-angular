@@ -96,7 +96,7 @@ export function xpath(el: any): any { // TODO: get rid of any
       });
     }
     let countIndex = sames.length > 1 ? ([].indexOf.call(sames, el) + 1) : '';
-    countIndex = countIndex > 1 ? countIndex - 1 : '';
+    countIndex = countIndex > 1 ? countIndex : '';
     const tagName = el.tagName.toLowerCase() !== 'tei' ? ' - ' + el.tagName.toLowerCase() : '';
 
     return xpath(el.parentNode) + tagName + countIndex;

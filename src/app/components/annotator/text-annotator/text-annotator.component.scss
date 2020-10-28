@@ -23,3 +23,21 @@
     display: flex;
     flex-direction: row;
 }
+
+.test-sected::after {
+    content: "\"";
+}
+.test-sected::before {
+    content: " \"";
+}
+.test-sected {
+    padding: 7px 15px;
+    font-family: "Junicode", serif;
+    font-style: italic;
+    border-left: 3px solid #666;
+    box-sizing: border-box;
+    max-height: 120px;
+    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

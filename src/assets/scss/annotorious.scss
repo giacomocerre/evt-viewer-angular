@@ -443,6 +443,7 @@
     width: 18px;
     height: 18px;
     background-color: #fff;
+    backface-visibility:hidden;
     -webkit-backface-visibility: hidden;
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
@@ -589,7 +590,8 @@
 
 /*# sourceMappingURL=annotorious.min.css.map*/
 
-//style personalization
+//style personalization of annotorious
+
 .r6o-widget.comment:not(:first-of-type) {
     padding-left: 10px;
 }
@@ -620,20 +622,11 @@
     text-shadow: none;
 }
 
-.r6o-editor .r6o-arrow:after{
-    background-color: #FFFFA9;
-}
-
-.r6o-widget.comment:first-child {
-    background: #FFFFA9;
-}
-
 .r6o-widget.comment .r6o-arrow-down{
     border: 0px;
     background: none;
 }
 
 .r6o-widget.comment.editable:first-child .r6o-editable-text[contenteditable="true"] {
-    background: #fff;
-    border: 1px dotted #ccc;
+    font-family: 'Junicode', sans-serif;
 }

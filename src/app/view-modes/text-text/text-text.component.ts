@@ -3,6 +3,7 @@ import { DisplayGrid, GridsterConfig, GridsterItem, GridType } from 'angular-gri
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Page } from 'src/app/models/evt-models';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { EVTStatusService } from 'src/app/services/evt-status.service';
 
 import { EditionLevel } from '../../app.config';
@@ -38,11 +39,13 @@ export class TextTextComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private anchoring: AnchoringService,
     private evtStatusService: EVTStatusService,
   ) {
   }
 
   ngOnInit() {
+    this.anchoring.anchoringText()
     this.initGridster();
     this.editionLevelChange$.subscribe(([edLvl1, edLvl2, changedPanel]) => {
       if (!edLvl1 || !edLvl2) { return; }

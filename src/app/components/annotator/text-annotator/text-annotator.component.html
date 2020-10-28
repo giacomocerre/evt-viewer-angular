@@ -1,6 +1,23 @@
-<div class="evt-adder-annotation" *ngIf="showAdder" [ngStyle]="{'left.px': settings.adder.x, 'top.px':settings.adder.y}">
+<div class="evt-adder-annotation" *ngIf="showAdder"
+    [ngStyle]="{'left.px': noteSettings.adder.x, 'top.px':noteSettings.adder.y}">
     <div class="evt-adder-toolbar">
-        <evt-button [iconRight]="{icon: 'pencil-alt'}" label="Annotate"></evt-button>
-        <evt-button [iconRight]="{icon: 'highlighter'}" label="Highlight"></evt-button>
+        <evt-button [iconRight]="{icon: 'pencil-alt'}" label="Annotate" (click)="openNoteCreator()"></evt-button>
+        <evt-button [iconRight]="{icon: 'highlighter'}" label="Highlight" (click)="createAnnotation('highlight')"></evt-button>
     </div>
 </div>
+<ng-container *ngIf="showCreator">
+    <div class="r6o-editor text-cretator"
+        [ngStyle]="{'left.px': noteSettings.adder.x, 'top.px':noteSettings.adder.y, 'opacity':1}">
+        <div class="r6o-arrow"></div>
+        <div class="r6o-editor-inner">
+            <div class="r6o-widget comment editable">
+                <div class="r6o-editable-text" data-placeholder="Add a note..." contenteditable="true" #div></div>
+            </div>
+            <div class="test-sected">{{selectedText}}</div>
+            <div class="r6o-footer">
+                <button class="r6o-btn outline" (click)="closeNoteCreator()">Cancel</button>
+                <button class="r6o-btn" (click)="createAnnotation('note',div.innerText)">Save</button>
+            </div>
+        </div>
+    </div>
+</ng-container>

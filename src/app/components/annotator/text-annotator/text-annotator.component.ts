@@ -3,6 +3,7 @@ import { Annotation } from 'src/app/models/evt-models';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 import { IdbService } from 'src/app/services/idb.service';
 import { textAnnotationSettings } from 'src/app/utils/annotation-utils';
+import { uuid } from 'src/app/utils/js-utils';
 
 @Component({
   selector: 'evt-text-annotator',
@@ -11,8 +12,10 @@ import { textAnnotationSettings } from 'src/app/utils/annotation-utils';
 })
 export class TextAnnotatorComponent implements OnInit {
   public showAdder: boolean = false;
+  public showCreator: boolean = false;
   public selectedText: string;
-  public settings = {adder: {x:0,y:0}};
+  public noteSettings = {adder: {x:0,y:0}};
+  public span = document.getElementsByClassName('try');
 
   constructor(
     private annotator: AnnotatorService,
@@ -23,33 +26,73 @@ export class TextAnnotatorComponent implements OnInit {
     this.annotator.textSelection.subscribe((selection) => {
       this.selectedText = selection.toString();
       /\S/.test(selection.toString())
-        ?(this.openAdder(), this.initializeNote(selection))
-        : this.showAdder = false;
+        ?(
+          this.openAdder(),
+          this.closeNoteCreator(),
+          this.temporarySelection(selection, false),
+          this.initializeTextNote(selection)
+        )
+        : (
+          this.closeAdder(),
+          this.closeNoteCreator(),
+          this.temporarySelection(selection, false)
+        );
     })
   }
 
-
-  initializeNote(sel) {
+  initializeTextNote(sel) {
     const range = sel.getRangeAt(0);
+    // this.temporarySelection(range, true)
     const rect = range.getBoundingClientRect();
     const regex = new RegExp(`(.{0,32})${this.selectedText.replace(/\n|\r/g, '')}(.{0,32})`);
-    this.settings = textAnnotationSettings(range, rect, regex);
+    this.noteSettings = textAnnotationSettings(sel, range, rect, regex);
   }
-
+  // Adder and Creation functionality
   openAdder(){
     this.showAdder = true;
   }
 
-  createAnnotation(){
-    let annotation: Annotation = {
+  closeAdder(){
+    this.showAdder = false;
+  }
+
+  openNoteCreator(){
+    this.closeAdder()
+    this.showCreator = true;
+  }
+
+  closeNoteCreator(){
+    this.showCreator = false;
+  }
+
+  temporarySelection(range, selected){
+    if(selected){
+      const selectedText = range.extractContents();
+      const span = document.createElement("span");
+      span.setAttribute("class","tmp-selection");
+      span.style.background = "yellow"
+      span.style.padding = "5px 0px"
+      span.appendChild(selectedText);
+      range.insertNode(span);
+    }else{
+      document.querySelectorAll(".tmp-selection").forEach((span:HTMLElement) => 
+        span.style.background = "transparent" 
+      )
+    }
+  }
+
+  createAnnotation(type, note?) {
+    let annotation: Annotation =
+    {
       '@context': 'http:www.w3.org/ns/anno.jsonld',
-      id:"aa",
+      id: uuid('#').replace('-0.',''),
       type:"Annotation",
       created: new Date().toISOString(),
       body: {
         type:"TextualBody",
-        value:"my note",
-        format:"ttext/html"
+        value: note ? note : '',
+        format:"ttext/html",
+        purpose: type
       },
       target: {
         source: window.location.href,
@@ -58,30 +101,32 @@ export class TextAnnotatorComponent implements OnInit {
           {
             type:'TextQuoteSelector',
             exact: this.selectedText,
-            prefix: this.settings["annotation"].prefix,
-            suffix: this.settings["annotation"].suffix
+            prefix: this.noteSettings["annotation"].prefix,
+            suffix: this.noteSettings["annotation"].suffix
           },
           {
             type:'TextPositionSelector',
-            start: this.settings["annotation"].startOffset,
-            end: this.settings["annotation"].endOffset
+            start: this.noteSettings["annotation"].startOffset,
+            end: this.noteSettings["annotation"].endOffset
           },
           {
             type: 'RangeSelector',
             startSelector: {
               type:'XpathSelector',
-              value: this.settings["annotation"].startXpath
+              value: this.noteSettings["annotation"].startXpath
             },
             endSelector: {
               type:'XpathSelector',
-              value: this.settings["annotation"].endXpath
+              value: this.noteSettings["annotation"].endXpath
             }
           }
         ]
       }
     }
     this.db.add(annotation);
-    this.showAdder = false;
+    this.closeAdder();
+    this.closeNoteCreator()
+
   }
 
 }

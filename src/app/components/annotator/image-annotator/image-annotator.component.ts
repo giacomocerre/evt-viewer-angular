@@ -45,13 +45,14 @@ export class ImageAnnotatorComponent implements OnInit {
       this.anno.on('selectAnnotation', (annotation) => {
         console.log('selected', annotation);
       });
-      this.uploadImgAnnotation()
+      this.initializeImgNote()
     });
   }
 
-  uploadImgAnnotation(){
+  initializeImgNote(){
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
-      this.anno.setAnnotations(annotations)
+      annotations.filter(anno => anno.target.type === "image")
+      this.anno.setAnnotations(annotations.filter(anno => anno.target.type === "image"))
       if((Array.from(this.annotationContent).length <= 1)){
         this.toggleAnnotation(this.viewNotes)
       }
