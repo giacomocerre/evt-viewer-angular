@@ -7,6 +7,8 @@ import { AnnotatorService } from './annotator.service';
   providedIn: 'root',
 })
 export class AnchoringService {
+
+  public noteID: string;
   constructor(private annotator: AnnotatorService, private db: IdbService) {}
 
   anchoringImage(page) {
@@ -67,47 +69,50 @@ export class AnchoringService {
 
       annotations.map((annotation) => {
         setTimeout(() => {
-          this.RangeSelector(annotation.target.selector)
+          this.RangeSelector(annotation.target.selector, annotation.id)
         }, 500);
       });
     });
   }
 
-  RangeSelector(annotation) {
-    let start_node = document.evaluate( annotation[1].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let end_node = document.evaluate( annotation[1].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+  RangeSelector(annotation, id) {
+    let start_node = document.evaluate( annotation[2].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let end_node = document.evaluate( annotation[2].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
     if(start_node && end_node){
-      this.getNode(start_node, end_node, annotation[0].exact, 0)
+      this.getNode(start_node, end_node, annotation[0].exact, 0, id)
     }else{
       this.orphans()
     }
   }
 
-  getNode(node, target, note, nodeCounter) {
+  getNode(node, target, note, nodeCounter, id) {
     if (node.contains(target)) {
-      this.highlightRange(target, "node", note)
+      this.highlightRange(target, "node", note, id)
       return true
     } else {
-      this.highlightRange(node, "node", note)
+      this.highlightRange(node, "node", note, id)
       if (node.nextElementSibling) {
         this.getNode(
           node.nextElementSibling,
           target,
           note,
-          (nodeCounter += 1)
+          (nodeCounter += 1),
+          id
         );
       } else {
         this.getNode(
           node.parentNode.nextElementSibling,
           target,
           note,
-          (nodeCounter += 1)
+          (nodeCounter += 1),
+          id
         );
       }
     }
   }
 
-  highlightRange(normedRange, cssClass, text) {
+  highlightRange(normedRange, cssClass, text, id) {
+    console.log(id)
     const white = /^\s*$/;
   
     // Find text nodes within the range to highlight.
@@ -147,6 +152,7 @@ export class AnchoringService {
       /** @type {HighlightElement} */
       const highlightEl = document.createElement('evt-highlight-note');
       highlightEl.className = cssClass;
+      highlightEl.setAttribute("data-id", id)
   
       nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
       nodes.forEach(node => highlightEl.appendChild(node));
@@ -157,7 +163,7 @@ export class AnchoringService {
     const notes = document.getElementsByTagName('evt-highlight-note');
     Array.from(notes).map(n => {
       const regex = new RegExp(match)
-      const span = n.innerHTML.replace(regex, `<span class='note' data-id='asd'>${match}</span>`)
+      const span = n.innerHTML.replace(regex, `<evt-annotation class='note'>${match}</evt-annotation >`)
       if (span != n.innerHTML) {
           n.innerHTML = span;
       }

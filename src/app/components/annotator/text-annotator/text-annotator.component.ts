@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Annotation } from 'src/app/models/evt-models';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Annotation, AnnotationID } from 'src/app/models/evt-models';
 import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 import { IdbService } from 'src/app/services/idb.service';
@@ -11,12 +11,17 @@ import { uuid } from 'src/app/utils/js-utils';
   templateUrl: './text-annotator.component.html',
   styleUrls: ['./text-annotator.component.scss']
 })
+
+
+
 export class TextAnnotatorComponent implements OnInit {
   public showAdder: boolean = false;
   public showCreator: boolean = false;
+  public showCommands: boolean = false;
+  public updateMode:boolean = false;
   public selectedText: string;
   public noteSettings = {adder: {x:0,y:0}};
-  public span = document.getElementsByClassName('try');
+  public noteInfo = [];
 
   constructor(
     private anchoring: AnchoringService,
@@ -25,26 +30,53 @@ export class TextAnnotatorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
     this.annotator.textSelection.subscribe((selection) => {
       this.selectedText = selection.toString();
       /\S/.test(selection.toString())
         ?(
           this.openAdder(),
           this.closeNoteCreator(),
-          this.temporarySelection(selection, false),
           this.initializeTextNote(selection)
         )
         : (
           this.closeAdder(),
-          this.closeNoteCreator(),
-          this.temporarySelection(selection, false)
+          this.closeNoteCreator()
         );
     })
+    this.clickableNote()
+    
+  }
+
+  clickableNote(){
+    setTimeout(() => {
+      let span = Array.from(document.getElementsByTagName("evt-highlight-note"));
+      span.forEach((s:HTMLElement) => {
+        s.addEventListener('click', () => {
+          this.noteInfo = []
+          const id = s.getAttribute("data-id");
+          this.db.getAll().then((annotations: Array<AnnotationID>) => {
+            annotations.map(anno => {
+              anno.id === id 
+              ? (
+                this.noteInfo.push(anno),
+                this.selectedText = anno.target.selector[0].exact,
+                this.noteSettings.adder.x = anno.target.selector[1].start,
+                this.noteSettings.adder.y = anno.target.selector[1].end,
+                this.openNoteCreator()
+              )
+              : null
+            })
+          })
+        })
+      })
+    }, 1000)
   }
 
   initializeTextNote(sel) {
+    this.noteInfo = []
+    this.updateMode = false;
     const range = sel.getRangeAt(0);
-    // this.temporarySelection(range, true)
     const rect = range.getBoundingClientRect();
     const regex = new RegExp(`(.{0,32})${this.selectedText.replace(/\n|\r/g, '')}(.{0,32})`);
     this.noteSettings = textAnnotationSettings(sel, range, rect, regex);
@@ -60,6 +92,7 @@ export class TextAnnotatorComponent implements OnInit {
 
   openNoteCreator(){
     this.closeAdder()
+    this.showCommands = false;
     this.showCreator = true;
   }
 
@@ -67,22 +100,44 @@ export class TextAnnotatorComponent implements OnInit {
     this.showCreator = false;
   }
 
-  temporarySelection(range, selected){
-    if(selected){
-      const selectedText = range.extractContents();
-      const span = document.createElement("span");
-      span.setAttribute("class","tmp-selection");
-      span.style.background = "yellow"
-      span.style.padding = "5px 0px"
-      span.appendChild(selectedText);
-      range.insertNode(span);
-    }else{
-      document.querySelectorAll(".tmp-selection").forEach((span:HTMLElement) => 
-        span.style.background = "transparent" 
-      )
-    }
+  toggleCommand(){
+    this.showCommands = !this.showCommands
+  }
+  
+  setUpdate(){
+    this.updateMode = true;
   }
 
+  updateAnnotation(note){
+    this.db.getAll().then((annotations: Array<AnnotationID>) => {
+      annotations.map(anno => {
+        anno.id === this.noteInfo[0].id
+        ? (anno.body.value = note, this.db.update(this.noteInfo[0].id, anno))
+        : null
+      })
+    })
+    this.showCreator = false;
+    this.updateMode = false;
+  }
+
+  deleteAnnotation(){
+    const annotation = this.getCurrentAnnotation()
+    const child = annotation.innerText
+    annotation.innerHTML = child
+    this.showCreator = false;
+    this.db.remove(this.noteInfo[0].id)
+  }
+
+  getCurrentAnnotation(){
+    let annotations = Array.from(document.getElementsByTagName("evt-highlight-note"));
+    let annotation;
+    annotations.map((anno:HTMLElement) => {
+      if(this.noteInfo[0].id === anno.getAttribute('data-id')){
+        annotation = anno;
+      }
+    })
+    return annotation
+  }
   createAnnotation(type, note?) {
     let annotation: Annotation =
     {
@@ -107,6 +162,11 @@ export class TextAnnotatorComponent implements OnInit {
             suffix: this.noteSettings["annotation"].suffix
           },
           {
+            type: "TextPositionSelector",
+            start: this.noteSettings.adder.x,
+            end: this.noteSettings.adder.y
+          },
+          {
             type: 'RangeSelector',
             startSelector: {
               type:'XpathSelector',
@@ -121,6 +181,7 @@ export class TextAnnotatorComponent implements OnInit {
       }
     }
     this.db.add(annotation);
+    this.clickableNote()
     this.closeAdder();
     this.closeNoteCreator()
     this.anchoring.anchoringText()

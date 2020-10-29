@@ -23,6 +23,5 @@ function formattingXpath(string) {
     return string 
       .replace(/ - /g,'/')
       .replace(/([0-9]+)/g, '[$1]')
-      .replace(/html(.*)evt-page/, '/evt-page')
       .replace(/\/evt-text /, '')
 }

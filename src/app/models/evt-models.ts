@@ -301,8 +301,8 @@ export interface AnnotatorSelector {
     exact?: string;
     prefix?: string;
     suffix?: string;
-    start?: string;
-    end?: string;
+    start?: number;
+    end?: number;
     value?: string;
     startSelector?: {
         type: string;

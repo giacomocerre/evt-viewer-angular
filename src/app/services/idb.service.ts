@@ -16,6 +16,10 @@ export class IdbService extends Dexie {
     this.db = this.table('Annotations');
   }
 
+  get(id) {
+    return this.db.get(id)
+  }
+
   getAll() {
     return this.db.toArray();
   }
