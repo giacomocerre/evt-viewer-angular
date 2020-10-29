@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Annotation } from 'src/app/models/evt-models';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 import { IdbService } from 'src/app/services/idb.service';
 import { textAnnotationSettings } from 'src/app/utils/annotation-utils';
@@ -18,6 +19,7 @@ export class TextAnnotatorComponent implements OnInit {
   public span = document.getElementsByClassName('try');
 
   constructor(
+    private anchoring: AnchoringService,
     private annotator: AnnotatorService,
     private db: IdbService
   ) { }
@@ -105,11 +107,6 @@ export class TextAnnotatorComponent implements OnInit {
             suffix: this.noteSettings["annotation"].suffix
           },
           {
-            type:'TextPositionSelector',
-            start: this.noteSettings["annotation"].startOffset,
-            end: this.noteSettings["annotation"].endOffset
-          },
-          {
             type: 'RangeSelector',
             startSelector: {
               type:'XpathSelector',
@@ -126,6 +123,7 @@ export class TextAnnotatorComponent implements OnInit {
     this.db.add(annotation);
     this.closeAdder();
     this.closeNoteCreator()
+    this.anchoring.anchoringText()
 
   }
 

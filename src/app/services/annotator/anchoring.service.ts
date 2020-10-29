@@ -59,115 +59,51 @@ export class AnchoringService {
   }
 
   anchoringText() {
+    console.log(window.location.href)
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
       annotations = annotations.filter((anno) => anno.target.type === 'text');
+      annotations = annotations.filter( anno => anno.target.source === window.location.href)
+      console.log(annotations)
+
       annotations.map((annotation) => {
         setTimeout(() => {
-          if (this.RangeSelector(annotation.target.selector)) {
-            console.log('range sel');
-            return;
-          } else if (this.TextPositionSelector(annotation.target.selector)) {
-            console.log('text position');
-            return;
-          } else if (this.TextQuoteSelector(annotation.target.selector)) {
-            console.log('text quote');
-            return;
-          } else if (this.fuzzySearch(annotation.target.selector)) {
-            console.log('fuzzy');
-            return;
-          } else {
-            this.orphans();
-          }
-        }, 3000);
+          this.RangeSelector(annotation.target.selector)
+        }, 500);
       });
     });
   }
 
-  // createSpan(node, text, position) {
-  //   console.log(position);
-  //   const words = node.textContent.split(' ').filter((s) => s != '').length;
-  //   let tmp = text.split(' ');
-  //   let search = [];
-  //   tmp.map((a) => {
-  //     search.push(a);
-  //   });
-  //   search = search.filter((s) => s != '');
-  //   if (position === 0 || position === 'target') {
-  //     let ttt;
-  //     // if(words <= 2){
-  //     //   search.map(s => {
-  //     //     const word = s;
-  //     //     const regex = new RegExp(word, 'g');
-  //     //     ttt = node.innerHTML.replace( regex, `<span class='note' data-id='asd'>${word}</span>`); 
-  //     //   })
-  //     // }else{
-  //     //     const words = `${search[0]} ${search[1]} ${search[2]}`;
-  //     //     console.log(search)
-  //     //     search = search.splice(3)
-  //     //     console.log(search)
-  //     //     const regex = new RegExp(`${words}`, 'g');
-  //     //     ttt = node.innerHTML.replace( regex, `<span class='note' data-id='asd'>${words}</span>`);
-  //     // }
-  //     search.map((s,i) => {
-  //       // `${search[i-1]?search[i-1]:''} ${s} ${search[i+1]?search[i+1]:''}`
-  //       // const regex2 = new RegExp(try2,"g")
-  //       if (words <= 2) {
-  //         const word = s;
-  //         const regex = new RegExp(word, 'g');
-  //         ttt = node.innerHTML.replace( regex, `<span class='note' data-id='asd'>${word}</span>`);
-  //         if (ttt != node.innerHTML) {
-  //           node.innerHTML = ttt;
-  //         }
-  //       } else {
-  //         // const words = `${search[0]} ${search[1]} ${search[2]}`;
-  //         // search = search.splice(3)
-  //         // const regex = new RegExp(`${words}`, 'g');
-  //         // console.log(regex)
-  //         // ttt = node.innerHTML.replace( regex, `<span class='note' data-id='asd'>${words}</span>`);
-  //         const words = `${search[i - 1] ? search[i - 1] + ' ': ''}${s}`;
-  //         const regex = new RegExp(`${words}`, 'g');
-  //         console.log(regex)
-  //         ttt = node.innerHTML.replace( regex, `<span class='note' data-id='asd'>${words}</span>`);
-  //         if (ttt != node.innerHTML) {
-  //           node.innerHTML = ttt;
-  //         }
-  //       }
-  //     });
-  //   } else {
-  //     const span = document.createElement('span');
-  //     span.setAttribute('class', 'note');
-  //     node.after(span);
-  //     span.appendChild(node);
-  //   }
-  // }
+  RangeSelector(annotation) {
+    let start_node = document.evaluate( annotation[1].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let end_node = document.evaluate( annotation[1].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+    if(start_node && end_node){
+      this.getNode(start_node, end_node, annotation[0].exact, 0)
+    }else{
+      this.orphans()
+    }
+  }
 
   getNode(node, target, note, nodeCounter) {
-    if (node && target) {
-      if (node.contains(target)) {
-        this.highlightRange(target, "node", note)
-        // this.createSpan(target, note, 'target');
-        return true;
-      } else {
-        this.highlightRange(node, "node", note)
-        // this.createSpan(node, note, nodeCounter);
-        if (node.nextElementSibling) {
-          this.getNode(
-            node.nextElementSibling,
-            target,
-            note,
-            (nodeCounter += 1)
-          );
-        } else {
-          this.getNode(
-            node.parentNode.nextElementSibling,
-            target,
-            note,
-            (nodeCounter += 1)
-          );
-        }
-      }
+    if (node.contains(target)) {
+      this.highlightRange(target, "node", note)
+      return true
     } else {
-      return false;
+      this.highlightRange(node, "node", note)
+      if (node.nextElementSibling) {
+        this.getNode(
+          node.nextElementSibling,
+          target,
+          note,
+          (nodeCounter += 1)
+        );
+      } else {
+        this.getNode(
+          node.parentNode.nextElementSibling,
+          target,
+          note,
+          (nodeCounter += 1)
+        );
+      }
     }
   }
 
@@ -185,9 +121,6 @@ export class AnchoringService {
     let match: string;
     textNodes.forEach(node => {
       match = this.getCommonString(node.textContent, text)
-      // const regex = new RegExp(match)
-      // console.log(regex)
-      // node.replace( regex, `<span class='note' data-id='asd'>${match}</span>`)
       if (prevNode && prevNode.nextSibling === node) {
         currentSpan.push(node);
       } else {
@@ -224,29 +157,13 @@ export class AnchoringService {
     const notes = document.getElementsByTagName('evt-highlight-note');
     Array.from(notes).map(n => {
       const regex = new RegExp(match)
-      console.log(regex)
       const span = n.innerHTML.replace(regex, `<span class='note' data-id='asd'>${match}</span>`)
-      console.log(match)
       if (span != n.innerHTML) {
           n.innerHTML = span;
       }
     })
-  
+
     return highlights;
-  }
-  //fix the common path
-  getCommonString(par, sel){
-    par = par.split(" ");
-    sel = sel.split(" ");
-    let result = ""
-    par.map((p,i) => {
-      sel.map((s,j) => {
-        s === p
-        ? result === "" ? result += s : result += " "+s
-        : null
-      })
-    })
-    return result;
   }
 
   textNodes(container) {
@@ -258,29 +175,33 @@ export class AnchoringService {
     return nodes;
   }
 
-  // metodi di match.{}
-  RangeSelector(annotation) {
-    
-    let start_node = document.evaluate( annotation[2].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let end_node = document.evaluate( annotation[2].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    return this.getNode(start_node, end_node, annotation[0].exact, 0);
-    return true
-  }
-
-  TextPositionSelector(annotaion) {
-    // const start_node = document.elementFromPoint(annotaion[1].start, annotaion[1].end);
-    // // const end_node = document.elementFromPoint();
-    // console.log(start_node)
-    // this.getNode(start_node, start_node, annotaion[0].exact, 0)
-    return false;
-  }
-
-  TextQuoteSelector(annotation) {
-    return false;
-  }
-
-  fuzzySearch(annotation) {
-    return false;
+  //fix the common path
+  getCommonString(par, sel){
+    par = par.split(" ").filter(p => p !== "");
+    sel = sel.split(" ").filter(p => p !== "");
+    let result = ""
+    sel.map((s,i) => {
+      par.map((p,j) => {
+        if(s === p){
+          if(par.length <= 2){
+            result === "" ? result += s : result += " "+s
+          }else{
+            if(i === 0){
+              if(sel[i+1] === par[j+1]){
+                result === "" ? result += s : result += " "+s
+              }
+            }else{
+              if(sel[i-1] === par[j-1] && sel[i+1] === par[j+1]){
+                result === "" ? result += s : result += " "+s
+              }else if(sel[i-1] === par[j-1]){
+                result === "" ? result += s : result += " "+s
+              }
+            }
+          }
+        }
+      })
+    })
+    return result;
   }
 
   orphans() {
