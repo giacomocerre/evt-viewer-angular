@@ -123,7 +123,10 @@ body {
     display: none;
 }
 
-evt-annotation.note{
-    background: yellow;
-    z-index: 9;
+evt-annotation.annotation{
+    background: cyan;
+}
+
+evt-annotation.highlight{
+    background:yellow;
 }

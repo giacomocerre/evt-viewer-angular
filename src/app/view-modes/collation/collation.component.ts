@@ -2,6 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType } from 'angular-gridster2';
 import { map } from 'rxjs/operators';
 import { Page } from 'src/app/models/evt-models';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { EVTStatusService } from 'src/app/services/evt-status.service';
 
 @Component({
@@ -26,16 +27,19 @@ export class CollationComponent implements OnInit, OnDestroy {
   );
 
   constructor(
+    private anchoring: AnchoringService,
     private evtStatusService: EVTStatusService,
   ) {
   }
 
   ngOnInit() {
+    this.anchoring.anchoringText()
     this.initGridster();
   }
 
   changePage(selectedPage: Page) {
     this.evtStatusService.updatePage$.next(selectedPage);
+    this.anchoring.anchoringText()
   }
 
   getWitnesses() {

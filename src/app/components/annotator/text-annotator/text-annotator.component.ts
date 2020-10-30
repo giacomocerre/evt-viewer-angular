@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Annotation, AnnotationID } from 'src/app/models/evt-models';
 import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
@@ -50,7 +50,7 @@ export class TextAnnotatorComponent implements OnInit {
 
   clickableNote(){
     setTimeout(() => {
-      let span = Array.from(document.getElementsByTagName("evt-highlight-note"));
+      let span = Array.from(document.getElementsByTagName("evt-annotation"));
       span.forEach((s:HTMLElement) => {
         s.addEventListener('click', () => {
           this.noteInfo = []
@@ -70,7 +70,7 @@ export class TextAnnotatorComponent implements OnInit {
           })
         })
       })
-    }, 1000)
+    }, 3000)
   }
 
   initializeTextNote(sel) {
@@ -108,6 +108,7 @@ export class TextAnnotatorComponent implements OnInit {
     this.updateMode = true;
   }
 
+  //CORS function db
   updateAnnotation(note){
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
       annotations.map(anno => {
@@ -148,7 +149,7 @@ export class TextAnnotatorComponent implements OnInit {
       body: {
         type:"TextualBody",
         value: note ? note : '',
-        format:"ttext/html",
+        format:"text/html",
         purpose: type
       },
       target: {

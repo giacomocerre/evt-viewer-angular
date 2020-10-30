@@ -3,6 +3,7 @@ import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType } from
 import { map } from 'rxjs/operators';
 import { EditionLevel } from 'src/app/app.config';
 import { Page } from 'src/app/models/evt-models';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { EVTStatusService } from 'src/app/services/evt-status.service';
 
 @Component({
@@ -28,21 +29,25 @@ export class TextVersionsComponent implements OnInit {
   );
 
   constructor(
+    private anchoring: AnchoringService,
     private evtStatusService: EVTStatusService,
   ) {
   }
 
   ngOnInit() {
+    this.anchoring.anchoringText()
     this.initGridster();
     this.initPageAndVersions();
   }
 
   changePage(selectedPage: Page) {
     this.evtStatusService.updatePage$.next(selectedPage);
+    this.anchoring.anchoringText()
   }
 
   changeEditionLevel(editionLevel: EditionLevel) {
     this.evtStatusService.updateEditionLevels$.next([editionLevel?.id]);
+    this.anchoring.anchoringText("edition")
   }
 
   getVersions() {

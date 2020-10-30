@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType } from 'angular-gridster2';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { EVTStatusService } from 'src/app/services/evt-status.service';
 import { EditionLevel } from '../../app.config';
 import { Page } from '../../models/evt-models';
@@ -32,19 +33,23 @@ export class ReadingTextComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private anchoring: AnchoringService,
     private evtStatusService: EVTStatusService,
   ) {
   }
 
   ngOnInit() {
+    this.anchoring.anchoringText()
     this.initGridster();
   }
 
   changePage(selectedPage: Page) {
     this.evtStatusService.updatePage$.next(selectedPage);
+    this.anchoring.anchoringText()
   }
 
   changeEditionLevel(editionLevel: EditionLevel) {
+    this.anchoring.anchoringText("edition")
     this.evtStatusService.updateEditionLevels$.next([editionLevel?.id]);
   }
 

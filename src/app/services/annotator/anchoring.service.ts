@@ -60,44 +60,53 @@ export class AnchoringService {
     });
   }
 
-  anchoringText() {
-    console.log(window.location.href)
+  anchoringText(editionLevel?) {
+    if(editionLevel){
+      this.resetAnnotation()
+    }
     this.db.getAll().then((annotations: Array<AnnotationID>) => {
       annotations = annotations.filter((anno) => anno.target.type === 'text');
       annotations = annotations.filter( anno => anno.target.source === window.location.href)
-      console.log(annotations)
-
       annotations.map((annotation) => {
         setTimeout(() => {
-          this.RangeSelector(annotation.target.selector, annotation.id)
+          this.RangeSelector(annotation.target.selector, annotation.body.purpose, annotation.id)
         }, 500);
       });
     });
   }
 
-  RangeSelector(annotation, id) {
+  resetAnnotation(){
+    let annotations = Array.from(document.getElementsByTagName("evt-highlight-note"));
+    annotations.map((anno:HTMLElement) => {
+      const child = anno.innerText
+      anno.innerHTML = child
+    })
+  }
+
+  RangeSelector(annotation, type, id) {
     let start_node = document.evaluate( annotation[2].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     let end_node = document.evaluate( annotation[2].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
     if(start_node && end_node){
-      this.getNode(start_node, end_node, annotation[0].exact, 0, id)
+      this.getNode(start_node, end_node, annotation[0].exact, 0, id, type)
     }else{
       this.orphans()
     }
   }
 
-  getNode(node, target, note, nodeCounter, id) {
+  getNode(node, target, note, nodeCounter, id, type) {
     if (node.contains(target)) {
-      this.highlightRange(target, "node", note, id)
+      this.highlightRange(target, type, note, id)
       return true
     } else {
-      this.highlightRange(node, "node", note, id)
+      this.highlightRange(node, type, note, id)
       if (node.nextElementSibling) {
         this.getNode(
           node.nextElementSibling,
           target,
           note,
           (nodeCounter += 1),
-          id
+          id,
+          type
         );
       } else {
         this.getNode(
@@ -105,14 +114,14 @@ export class AnchoringService {
           target,
           note,
           (nodeCounter += 1),
-          id
+          id,
+          type
         );
       }
     }
   }
 
   highlightRange(normedRange, cssClass, text, id) {
-    console.log(id)
     const white = /^\s*$/;
   
     // Find text nodes within the range to highlight.
@@ -150,22 +159,24 @@ export class AnchoringService {
       // likelihood of highlights being hidden by page styling.
   
       /** @type {HighlightElement} */
-      const highlightEl = document.createElement('evt-highlight-note');
-      highlightEl.className = cssClass;
-      highlightEl.setAttribute("data-id", id)
-  
-      nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
-      nodes.forEach(node => highlightEl.appendChild(node));
-  
-      highlights.push(highlightEl);
+        const highlightEl = document.createElement('evt-highlight-note');
+        highlightEl.className = cssClass;
+        highlightEl.setAttribute("data-id", id)
+    
+        nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
+        nodes.forEach(node => highlightEl.appendChild(node));
+    
+        highlights.push(highlightEl);
     });
 
     const notes = document.getElementsByTagName('evt-highlight-note');
     Array.from(notes).map(n => {
       const regex = new RegExp(match)
-      const span = n.innerHTML.replace(regex, `<evt-annotation class='note'>${match}</evt-annotation >`)
-      if (span != n.innerHTML) {
-          n.innerHTML = span;
+      if(n.innerHTML.match(regex)){
+        const span = n.innerHTML.replace(regex, `<evt-annotation class=${cssClass} data-id=${id}>${match}</evt-annotation >`)
+        if (span != n.innerHTML) {
+            n.innerHTML = span;
+        }
       }
     })
 

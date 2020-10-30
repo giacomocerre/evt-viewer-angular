@@ -30,7 +30,7 @@
             <div class="test-sected">{{selectedText}}</div>
             <div class="r6o-footer">
                 <button class="r6o-btn outline" (click)="closeNoteCreator()">Cancel</button>
-                <button *ngIf="!updateMode" class="r6o-btn" (click)="createAnnotation('note',div.innerText)">Save</button>
+                <button *ngIf="!updateMode" class="r6o-btn" (click)="createAnnotation('annotation',div.innerText)">Save</button>
                 <button *ngIf="updateMode" class="r6o-btn" (click)="updateAnnotation(div.innerText)">Update</button>
             </div>
         </div>

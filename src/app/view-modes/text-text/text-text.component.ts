@@ -68,10 +68,10 @@ export class TextTextComponent implements OnInit, OnDestroy {
   changeEditionLevel(edLvl: EditionLevel, changedPanel: 1 | 2) {
     if (changedPanel === 1) {
       this.editionLevelPanel1Change$.next(edLvl);
-      this.anchoring.anchoringText()
+      this.anchoring.anchoringText("editon")
     } else if (changedPanel === 2) {
       this.editionLevelPanel2Change$.next(edLvl);
-      this.anchoring.anchoringText()
+      this.anchoring.anchoringText("edition")
     }
     this.lastPanelChanged$.next(changedPanel);
   }
