@@ -8,8 +8,10 @@ import { AnnotatorService } from './annotator.service';
 })
 export class AnchoringService {
 
-  public noteID: string;
-  constructor(private annotator: AnnotatorService, private db: IdbService) {}
+  constructor(
+    private annotator: AnnotatorService,
+    private db: IdbService
+  ) {}
 
   anchoringImage(page) {
     this.annotator.osdCurrentPage = page;
