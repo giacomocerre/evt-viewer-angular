@@ -13,10 +13,12 @@ export function textAnnotationSettings(sel, range, rect, regex){
       prefix = range.commonAncestorContainer.textContent.replace(/\n|\r/g, '').match(regex)[1];
       suffix = range.commonAncestorContainer.textContent.replace(/\n|\r/g, '').match(regex)[2];
     }
-    const startXpath = formattingXpath(xpath(sel.anchorNode.parentNode.parentNode));
-    const endXpath   = formattingXpath(xpath(sel.focusNode.parentNode.parentNode));
+    const startOffset = range.startOffset;
+    const endOffset = range.endOffset;
+    const startXpath = formattingXpath(xpath(range.startContainer.parentNode));
+    const endXpath   = formattingXpath(xpath(range.endContainer.parentNode));
     console.log(startXpath, endXpath)
-    return {adder: {x, y}, annotation:{prefix, suffix, startXpath, endXpath}}
+    return {adder: {x, y}, annotation:{prefix, suffix, startOffset, endOffset, startXpath, endXpath}}
 }
 
 function formattingXpath(string) {

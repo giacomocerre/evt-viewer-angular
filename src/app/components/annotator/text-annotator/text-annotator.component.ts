@@ -12,8 +12,6 @@ import { uuid } from 'src/app/utils/js-utils';
   styleUrls: ['./text-annotator.component.scss']
 })
 
-
-
 export class TextAnnotatorComponent implements OnInit {
   public showAdder: boolean = false;
   public showCreator: boolean = false;
@@ -57,7 +55,7 @@ export class TextAnnotatorComponent implements OnInit {
           const id = s.getAttribute("data-id");
           this.db.getAll().then((annotations: Array<AnnotationID>) => {
             annotations.map(anno => {
-              anno.id === id 
+              anno.id === id
               ? (
                 this.noteInfo.push(anno),
                 this.selectedText = anno.target.selector[0].exact,
@@ -70,7 +68,7 @@ export class TextAnnotatorComponent implements OnInit {
           })
         })
       })
-    }, 3000)
+    }, 2000)
   }
 
   initializeTextNote(sel) {
@@ -160,9 +158,14 @@ export class TextAnnotatorComponent implements OnInit {
             suffix: this.noteSettings["annotation"].suffix
           },
           {
-            type: "TextPositionSelector",
+            type: "DataPositionSelector",
             start: this.noteSettings.adder.x,
             end: this.noteSettings.adder.y
+          },
+          {
+            type: "TextPositionSelector",
+            start: this.noteSettings["annotation"].startOffset,
+            end: this.noteSettings["annotation"].endOffset
           },
           {
             type: 'RangeSelector',

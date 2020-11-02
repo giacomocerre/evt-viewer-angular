@@ -69,7 +69,7 @@ export class AnchoringService {
       annotations = annotations.filter( anno => anno.target.source === window.location.href)
       annotations.map((annotation) => {
         setTimeout(() => {
-          this.RangeSelector(annotation.target.selector, annotation.body.purpose, annotation.id)
+          this.highlightRange(annotation.target.selector, annotation.body.purpose, annotation.id)
         }, 500);
       });
     });
@@ -83,140 +83,26 @@ export class AnchoringService {
     })
   }
 
-  RangeSelector(annotation, type, id) {
-    let start_node = document.evaluate( annotation[2].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let end_node = document.evaluate( annotation[2].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
-    if(start_node && end_node){
-      this.getNode(start_node, end_node, annotation[0].exact, id, type)
-    }else{
-      this.orphans()
+  highlightRange(annotation, type, id) {
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    let range = document.createRange()
+    let start_node = document.evaluate( annotation[3].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let end_node = document.evaluate( annotation[3].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+    try {
+      range.setStart(start_node.firstChild, annotation[2].start);
+      range.setEnd(end_node.firstChild, annotation[2].end);
+      sel.addRange(range)
+      const selectedText = range.extractContents();
+      const span = document.createElement("evt-annotation");
+      span.setAttribute("class",`${type}`);
+      span.setAttribute("data-id",`${id}`);
+      span.appendChild(selectedText);
+      range.insertNode(span);
+    } catch (error) {
+      null;
     }
-  }
 
-  getNode(node, target, note, id, type) {
-    if (node.contains(target)) {
-      this.highlightRange(target, type, note, id)
-      return true
-    } else {
-      this.highlightRange(node, type, note, id)
-      if (node.nextElementSibling) {
-        this.getNode(
-          node.nextElementSibling,
-          target,
-          note,
-          id,
-          type
-        );
-      } else {
-        this.getNode(
-          node.parentNode.nextElementSibling,
-          target,
-          note,
-          id,
-          type
-        );
-      }
-    }
-  }
-
-  highlightRange(normedRange, cssClass, text, id) {
-    const white = /^\s*$/;
-  
-    // Find text nodes within the range to highlight.
-    const textNodes = this.textNodes(normedRange);
-  
-    // Group text nodes into spans of adjacent nodes. If a group of text nodes are
-    // adjacent, we only need to create one highlight element for the group.
-    let textNodeSpans = [];
-    let prevNode = null;
-    let currentSpan = null;
-    let match: string;
-    textNodes.forEach(node => {
-      match = this.getCommonString(node.textContent, text)
-      if (prevNode && prevNode.nextSibling === node) {
-        currentSpan.push(node);
-      } else {
-        currentSpan = [node];
-        textNodeSpans.push(currentSpan);
-      }
-      prevNode = node;
-    });
-  
-    // Filter out text node spans that consist only of white space. This avoids
-    // inserting highlight elements in places that can only contain a restricted
-    // subset of nodes such as table rows and lists.
-    textNodeSpans = textNodeSpans.filter(span =>
-      // Check for at least one text node with non-space content.
-      span.some(node => !white.test(node.nodeValue))
-    );
-  
-    // Wrap each text node span with a `<hypothesis-highlight>` element.
-    const highlights = [];
-    textNodeSpans.forEach(nodes => {
-      // A custom element name is used here rather than `<span>` to reduce the
-      // likelihood of highlights being hidden by page styling.
-  
-      /** @type {HighlightElement} */
-        const highlightEl = document.createElement('evt-highlight-note');
-        highlightEl.className = cssClass;
-        highlightEl.setAttribute("data-id", id)
-    
-        nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
-        nodes.forEach(node => highlightEl.appendChild(node));
-    
-        highlights.push(highlightEl);
-    });
-
-    const notes = document.getElementsByTagName('evt-highlight-note');
-    Array.from(notes).map(n => {
-      const regex = new RegExp(match)
-      if(n.innerHTML.match(regex)){
-        const span = n.innerHTML.replace(regex, `<evt-annotation class=${cssClass} data-id=${id}>${match}</evt-annotation >`)
-        if (span != n.innerHTML) {
-            n.innerHTML = span;
-        }
-      }
-    })
-
-    return highlights;
-  }
-
-  textNodes(container) {
-    const nodes = [];
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-    while (walker.nextNode()) {
-      nodes.push(walker.currentNode);
-    }
-    return nodes;
-  }
-
-  //fix the common path
-  getCommonString(par, sel){
-    par = par.split(" ").filter(p => p !== "");
-    sel = sel.split(" ").filter(p => p !== "");
-    let result = ""
-    sel.map((s,i) => {
-      par.map((p,j) => {
-        if(s === p){
-          if(par.length <= 2){
-            result === "" ? result += s : result += " "+s
-          }else{
-            if(i === 0){
-              if(sel[i+1] === par[j+1]){
-                result === "" ? result += s : result += " "+s
-              }
-            }else{
-              if(sel[i-1] === par[j-1] && sel[i+1] === par[j+1]){
-                result === "" ? result += s : result += " "+s
-              }else if(sel[i-1] === par[j-1]){
-                result === "" ? result += s : result += " "+s
-              }
-            }
-          }
-        }
-      })
-    })
-    return result;
   }
 
   orphans() {
