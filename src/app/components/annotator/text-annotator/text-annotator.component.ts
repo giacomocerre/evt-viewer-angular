@@ -30,8 +30,8 @@ export class TextAnnotatorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
-    this.annotator.textSelection.subscribe((selection) => {
+   
+    this.annotator.textSelection.subscribe((selection) => {{}
       this.selectedText = selection.toString();
       /\S/.test(selection.toString())
         ?(
@@ -110,13 +110,10 @@ export class TextAnnotatorComponent implements OnInit {
 
   //CORS function db
   updateAnnotation(note){
-    this.db.getAll().then((annotations: Array<AnnotationID>) => {
-      annotations.map(anno => {
-        anno.id === this.noteInfo[0].id
-        ? (anno.body.value = note, this.db.update(this.noteInfo[0].id, anno))
-        : null
-      })
+    const annotation = this.db.get({id:this.noteInfo[0].id}).then(annotation => {
+      annotation.body.value = note
     })
+    this.db.update(this.noteInfo[0].id, annotation)
     this.showCreator = false;
     this.updateMode = false;
   }
@@ -186,7 +183,6 @@ export class TextAnnotatorComponent implements OnInit {
     this.closeAdder();
     this.closeNoteCreator()
     this.anchoring.anchoringText()
-
   }
 
 }

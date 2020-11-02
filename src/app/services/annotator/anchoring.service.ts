@@ -87,13 +87,13 @@ export class AnchoringService {
     let start_node = document.evaluate( annotation[2].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     let end_node = document.evaluate( annotation[2].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
     if(start_node && end_node){
-      this.getNode(start_node, end_node, annotation[0].exact, 0, id, type)
+      this.getNode(start_node, end_node, annotation[0].exact, id, type)
     }else{
       this.orphans()
     }
   }
 
-  getNode(node, target, note, nodeCounter, id, type) {
+  getNode(node, target, note, id, type) {
     if (node.contains(target)) {
       this.highlightRange(target, type, note, id)
       return true
@@ -104,7 +104,6 @@ export class AnchoringService {
           node.nextElementSibling,
           target,
           note,
-          (nodeCounter += 1),
           id,
           type
         );
@@ -113,7 +112,6 @@ export class AnchoringService {
           node.parentNode.nextElementSibling,
           target,
           note,
-          (nodeCounter += 1),
           id,
           type
         );

@@ -11,13 +11,18 @@ export class IdbService extends Dexie {
   constructor() {
     super('EVT-Annotator');
     this.version(1).stores({
-      Annotations: '++id',
+      Annotations: 'id, target.type, target.source',
     });
     this.db = this.table('Annotations');
   }
 
+
   get(id) {
-    return this.db.get(id)
+    return this.db.get(id);
+  }
+
+  where(options){
+    return this.db.where(options);
   }
 
   getAll() {
