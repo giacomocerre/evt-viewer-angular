@@ -13,8 +13,10 @@ export class AnchoringService {
 
   anchoringImage(page) {
     this.annotator.osdCurrentPage = page;
-    this.db.getAll().then((annotations: Array<AnnotationID>) => {
+    const collection = this.db.where("target.type").equals("image").toArray();
+    collection.then((annotations: Array<AnnotationID>) => {
       const view = { rect: [], poly: [] };
+      console.log(annotations)
       const g_draw = Array.from(
         document.getElementsByClassName('a9s-annotation')
       );
@@ -64,35 +66,30 @@ export class AnchoringService {
     if(editionLevel){
       this.resetAnnotation()
     }
-    this.db.getAll().then((annotations: Array<AnnotationID>) => {
-      annotations = annotations.filter((anno) => anno.target.type === 'text');
-      annotations = annotations.filter( anno => anno.target.source === window.location.href)
+    setTimeout(() => {
+    const collection = this.db.where("target.source").equals(window.location.href).toArray();
+    collection.then((annotations: Array<AnnotationID>) => {
       annotations.map((annotation) => {
-        setTimeout(() => {
           this.highlightRange(annotation.target.selector, annotation.body.purpose, annotation.id)
-        }, 500);
       });
     });
+  }, 1000);
   }
 
   resetAnnotation(){
-    let annotations = Array.from(document.getElementsByTagName("evt-highlight-note"));
+    let annotations = Array.from(document.getElementsByTagName("evt-annotation"));
     annotations.map((anno:HTMLElement) => {
-      const child = anno.innerText
-      anno.innerHTML = child
+      anno.outerHTML = anno.innerHTML
     })
   }
 
   highlightRange(annotation, type, id) {
-    var sel = window.getSelection();
-    sel.removeAllRanges();
     let range = document.createRange()
-    let start_node = document.evaluate( annotation[3].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let end_node = document.evaluate( annotation[3].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+    let startNode = document.evaluate( annotation[3].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let endNode = document.evaluate( annotation[3].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
     try {
-      range.setStart(start_node.firstChild, annotation[2].start);
-      range.setEnd(end_node.firstChild, annotation[2].end);
-      sel.addRange(range)
+      range.setStart(startNode.firstChild, annotation[2].start);
+      range.setEnd(endNode.firstChild, annotation[2].end);
       const selectedText = range.extractContents();
       const span = document.createElement("evt-annotation");
       span.setAttribute("class",`${type}`);
@@ -102,10 +99,5 @@ export class AnchoringService {
     } catch (error) {
       null;
     }
-
-  }
-
-  orphans() {
-    console.log('orphans');
   }
 }

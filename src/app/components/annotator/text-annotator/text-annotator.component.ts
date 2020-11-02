@@ -68,7 +68,7 @@ export class TextAnnotatorComponent implements OnInit {
           })
         })
       })
-    }, 2000)
+    }, 3000)
   }
 
   initializeTextNote(sel) {

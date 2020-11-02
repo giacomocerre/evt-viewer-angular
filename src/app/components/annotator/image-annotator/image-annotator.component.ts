@@ -50,9 +50,9 @@ export class ImageAnnotatorComponent implements OnInit {
   }
 
   initializeImgNote(){
-    this.db.getAll().then((annotations: Array<AnnotationID>) => {
-      annotations.filter(anno => anno.target.type === "image")
-      this.anno.setAnnotations(annotations.filter(anno => anno.target.type === "image"))
+    const collection = this.db.where("target.type").equals("image").toArray();
+    collection.then((annotations: Array<AnnotationID>) => {
+      this.anno.setAnnotations(annotations)
       if((Array.from(this.annotationContent).length <= 1)){
         this.toggleAnnotation(this.viewNotes)
       }
