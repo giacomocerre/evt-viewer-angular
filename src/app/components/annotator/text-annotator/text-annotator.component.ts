@@ -77,7 +77,7 @@ export class TextAnnotatorComponent implements OnInit {
     const range = sel.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     const regex = new RegExp(`(.{0,32})${this.selectedText.replace(/\n|\r/g, '')}(.{0,32})`);
-    this.noteSettings = textAnnotationSettings(sel, range, rect, regex);
+    this.noteSettings = textAnnotationSettings(range, rect, regex);
   }
   // Adder and Creation functionality
   openAdder(){

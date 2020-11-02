@@ -1,6 +1,6 @@
 import { xpath } from 'src/app/utils/dom-utils';
 
-export function textAnnotationSettings(sel, range, rect, regex){
+export function textAnnotationSettings(range, rect, regex){
     const y = rect.top + (rect.bottom - rect.top);
     const x = rect.left;
     let prefix;
