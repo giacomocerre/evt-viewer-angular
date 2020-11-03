@@ -1,15 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Annotation } from 'src/app/models/evt-models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnnotatorService {
-  textSelection = new Subject<object>();
-  imageSelection = new Subject<object>();
-  annotationsList: Array<Annotation> = [];
-  osdCurrentPage:string;;
+export class AnnotatorService implements OnDestroy {
+  public textSelection = new Subject<object>();
+  public imageSelection = new Subject<object>();
+  public osdCurrentPage:string;
 
   getTextSelection() {
     this.textSelection.next(document.getSelection());
@@ -19,4 +17,10 @@ export class AnnotatorService {
     this.osdCurrentPage = page
     this.imageSelection.next(viewer)
   }
+  
+  ngOnDestroy(): void{
+    this.textSelection.unsubscribe()
+    this.imageSelection.unsubscribe()
+  }
+
 }

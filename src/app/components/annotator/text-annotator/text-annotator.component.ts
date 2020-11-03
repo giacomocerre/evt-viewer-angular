@@ -53,17 +53,14 @@ export class TextAnnotatorComponent implements OnInit {
         s.addEventListener('click', () => {
           this.noteInfo = []
           const id = s.getAttribute("data-id");
-          this.db.getAll().then((annotations: Array<AnnotationID>) => {
+          const collection = this.db.where("id").equals(id).toArray();
+          collection.then((annotations: Array<AnnotationID>) => {
             annotations.map(anno => {
-              anno.id === id
-              ? (
-                this.noteInfo.push(anno),
-                this.selectedText = anno.target.selector[0].exact,
-                this.noteSettings.adder.x = anno.target.selector[1].start,
-                this.noteSettings.adder.y = anno.target.selector[1].end,
-                this.openNoteCreator()
-              )
-              : null
+              this.noteInfo.push(anno),
+              this.selectedText = anno.target.selector[0].exact,
+              this.noteSettings.adder.x = anno.target.selector[1].start,
+              this.noteSettings.adder.y = anno.target.selector[1].end,
+              this.openNoteCreator()
             })
           })
         })

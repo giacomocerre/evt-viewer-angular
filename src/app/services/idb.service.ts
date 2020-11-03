@@ -21,20 +21,20 @@ export class IdbService extends Dexie {
     return this.db.get(id);
   }
 
-  where(options){
-    return this.db.where(options);
+  where(index){
+    return this.db.where(index);
   }
 
   getAll() {
     return this.db.toArray();
   }
 
-  add(data) {
-    return this.db.add(data);
+  add(annotation) {
+    return this.db.add(annotation);
   }
 
-  update(id, data) {
-    return this.db.update(id, data);
+  update(id, annotation) {
+    return this.db.update(id, annotation);
   }
 
   remove(id) {

@@ -1,6 +1,6 @@
-<div class="evt-annotation-draw" evtAnchoring>
-    <evt-button *ngIf="!viewNotes" [iconRight]="{icon: 'eye-slash'}" (btnClick)="toggleAnnotation(!viewNotes)"></evt-button>
-    <evt-button *ngIf="viewNotes" [iconRight]="{icon: 'eye'}" (btnClick)="toggleAnnotation(!viewNotes)"></evt-button>
+<div class="evt-annotation-draw">
+    <evt-button *ngIf="!viewNotes" [iconRight]="{icon: 'eye-slash'}" (btnClick)="toggleAnnotations(!viewNotes)"></evt-button>
+    <evt-button *ngIf="viewNotes" [iconRight]="{icon: 'eye'}" (btnClick)="toggleAnnotations(!viewNotes)"></evt-button>
     <evt-button [iconRight]="{icon: 'vector-square'}" (btnClick)="setDrawType('rect')"></evt-button>
     <evt-button [iconRight]="{icon: 'draw-polygon'}" (btnClick)="setDrawType('polygon')"></evt-button>
 </div>

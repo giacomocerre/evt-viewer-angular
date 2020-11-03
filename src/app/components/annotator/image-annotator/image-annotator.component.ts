@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
-import * as Annotorious from '@recogito/annotorious-openseadragon';
-import { Annotation, AnnotationID } from 'src/app/models/evt-models';
-import { IdbService } from 'src/app/services/idb.service';
 import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
+import { IdbService } from 'src/app/services/idb.service';
+import * as Annotorious from '@recogito/annotorious-openseadragon';
+import { Annotation } from 'src/app/models/evt-models';
 
 @Component({
   selector: 'evt-image-annotator',
@@ -12,10 +12,8 @@ import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 })
 export class ImageAnnotatorComponent implements OnInit {
 
-  public anno;
+  public annotorious;
   public annotationContent = document.getElementsByClassName("a9s-annotationlayer");
-  public annotationDraws = document.getElementsByClassName("a9s-annotation");
-  public svgSelection= document.getElementsByClassName("a9s-selection");
   public viewNotes: boolean = false
 
   constructor(
@@ -27,51 +25,45 @@ export class ImageAnnotatorComponent implements OnInit {
   ngOnInit(): void {
     this.annotator.imageSelection.subscribe((viewer) => {
       viewer
-        ? (this.anno = Annotorious(viewer, {}))
+        ? this.annotorious = Annotorious(viewer, {})
         : null
       //creation
-      this.anno.on('createAnnotation', (a:Annotation) => {
-         this.createAnnotation(a)
+      this.annotorious.on('createAnnotation', (annotation:Annotation) => {
+         this.createAnnotation(annotation)
       });
       //update
-      this.anno.on('updateAnnotation', (annotation, {}) => {
+      this.annotorious.on('updateAnnotation', (annotation:Annotation, {}) => {
         this.db.update(annotation.id, annotation)
       });
       //delete
-      this.anno.on('deleteAnnotation', (annotation) => {
+      this.annotorious.on('deleteAnnotation', (annotation: Annotation) => {
         this.db.remove(annotation.id)
       });
-      //selection
-      this.anno.on('selectAnnotation', (annotation) => {
-        console.log('selected', annotation);
-      });
-      this.initializeImgNote()
+      this.initializeImageNotes()
     });
   }
 
-  initializeImgNote(){
+  initializeImageNotes(){
     const collection = this.db.where("target.type").equals("image").toArray();
-    collection.then((annotations: Array<AnnotationID>) => {
-      this.anno.setAnnotations(annotations)
-      if((Array.from(this.annotationContent).length <= 1)){
-        this.toggleAnnotation(this.viewNotes)
-      }
+    collection.then((annotations: Array<Annotation>) => {
+      this.annotorious.setAnnotations(annotations)
+      this.toggleAnnotations(this.viewNotes)
     });
   }
 
-  toggleAnnotation(show){
+  toggleAnnotations(show:boolean){
     this.viewNotes = show;
+    console.log(this.annotationContent)
     Array.from(this.annotationContent)[0].setAttribute("style", `display:${show ? "block": "none"}`)
   }
 
-  setDrawType(type){
-    this.toggleAnnotation(true);
-    this.anno.setDrawingEnabled(true)
-    this.anno.setDrawingTool(type); 
+  setDrawType(type:string){
+    this.toggleAnnotations(true);
+    this.annotorious.setDrawingEnabled(true)
+    this.annotorious.setDrawingTool(type); 
   }
 
   createAnnotation(a) {
-    console.log(a.target.selector)
     const annotation: Annotation = {
       '@context': 'http:www.w3.org/ns/anno.jsonld',
       id:a.id,

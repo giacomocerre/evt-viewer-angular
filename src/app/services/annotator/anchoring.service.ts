@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AnnotationID } from 'src/app/models/evt-models';
+import { Annotation } from 'src/app/models/evt-models';
 import { IdbService } from '../idb.service';
 import { AnnotatorService } from './annotator.service';
 
@@ -16,9 +16,8 @@ export class AnchoringService {
   anchoringImage(page) {
     this.annotator.osdCurrentPage = page;
     const collection = this.db.where("target.type").equals("image").toArray();
-    collection.then((annotations: Array<AnnotationID>) => {
+    collection.then((annotations: Array<Annotation>) => {
       const view = { rect: [], poly: [] };
-      console.log(annotations)
       const g_draw = Array.from(
         document.getElementsByClassName('a9s-annotation')
       );
@@ -70,7 +69,7 @@ export class AnchoringService {
     }
     setTimeout(() => {
     const collection = this.db.where("target.source").equals(window.location.href).toArray();
-    collection.then((annotations: Array<AnnotationID>) => {
+    collection.then((annotations: Array<Annotation>) => {
       annotations.map((annotation) => {
           this.highlightRange(annotation.target.selector, annotation.body.purpose, annotation.id)
       });

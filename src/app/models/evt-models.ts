@@ -279,7 +279,7 @@ export interface Annotation {
     created: string;
     modified?: string;
     body: AnnotationBody;
-    target: AnnotatorTarget;
+    target: AnnotationTarget;
 }
 
 export interface AnnotationBody {
@@ -290,13 +290,13 @@ export interface AnnotationBody {
     purpose?: string;
 }
 
-export interface AnnotatorTarget {
+export interface AnnotationTarget {
     source: string;
     type: string;
-    selector: AnnotatorSelector[]
+    selector: AnnotationSelectors[]
 }
 
-export interface AnnotatorSelector {
+export interface AnnotationSelectors {
     type: string;
     exact?: string;
     prefix?: string;
