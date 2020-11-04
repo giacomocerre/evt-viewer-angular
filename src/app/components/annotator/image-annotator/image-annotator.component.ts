@@ -53,7 +53,6 @@ export class ImageAnnotatorComponent implements OnInit {
 
   toggleAnnotations(show:boolean){
     this.viewNotes = show;
-    console.log(this.annotationContent)
     Array.from(this.annotationContent)[0].setAttribute("style", `display:${show ? "block": "none"}`)
   }
 

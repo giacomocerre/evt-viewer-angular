@@ -15,21 +15,21 @@ export class AnchoringService {
 
   anchoringImage(page) {
     this.annotator.osdCurrentPage = page;
+    const view = { rect: [], poly: [] };
     const collection = this.db.where("target.type").equals("image").toArray();
     collection.then((annotations: Array<Annotation>) => {
-      const view = { rect: [], poly: [] };
       const g_draw = Array.from(
         document.getElementsByClassName('a9s-annotation')
       );
       g_draw.map((g) => {
-        const svg_id = g.getAttribute('data-id');
+        const draw_id = g.getAttribute('data-id');
         Array.from(g.childNodes).map((g_child: HTMLElement) => {
           g_child.removeAttribute('points');
           g_child.removeAttribute('heigth');
           g_child.removeAttribute('width');
         });
         annotations
-          .filter((x) => x.id === svg_id && x.target.source === page)
+          .filter((x) => x.id === draw_id && x.target.source === page)
           .map((anno) => {
             if (anno.target.selector[0].type === 'FragmentSelector') {
               view.rect.push({
@@ -65,7 +65,7 @@ export class AnchoringService {
 
   anchoringText(editionLevel?) {
     if(editionLevel){
-      this.resetAnnotation()
+      this.resetAnnotations()
     }
     setTimeout(() => {
     const collection = this.db.where("target.source").equals(window.location.href).toArray();
@@ -77,7 +77,7 @@ export class AnchoringService {
   }, 1000);
   }
 
-  resetAnnotation(){
+  resetAnnotations(){
     let annotations = Array.from(document.getElementsByTagName("evt-annotation"));
     annotations.map((anno:HTMLElement) => {
       anno.outerHTML = anno.innerHTML

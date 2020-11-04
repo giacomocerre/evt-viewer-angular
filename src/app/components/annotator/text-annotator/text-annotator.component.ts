@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { Annotation, AnnotationID } from 'src/app/models/evt-models';
+import { Annotation } from 'src/app/models/evt-models';
 import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
 import { IdbService } from 'src/app/services/idb.service';
@@ -55,7 +55,7 @@ export class TextAnnotatorComponent implements OnInit {
           this.noteInfo = []
           const id = s.getAttribute("data-id");
           const collection = this.db.where("id").equals(id).toArray();
-          collection.then((annotations: Array<AnnotationID>) => {
+          collection.then((annotations: Array<Annotation>) => {
             annotations.map(anno => {
               this.noteInfo.push(anno),
               this.selectedText = anno.target.selector[0].exact,
@@ -66,16 +66,16 @@ export class TextAnnotatorComponent implements OnInit {
           })
         })
       })
-    }, 3000)
+    }, 2000)
   }
 
   initializeTextNote(sel) {
-    this.noteInfo = []
-    this.updateMode = false;
     const range = sel.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     const regex = new RegExp(`(.{0,32})${this.selectedText.replace(/\n|\r/g, '')}(.{0,32})`);
-    this.noteSettings = textAnnotationSettings(sel, range, rect, regex);
+    this.noteSettings = textAnnotationSettings(range, rect, regex);
+    this.noteInfo = []
+    this.updateMode = false;
   }
   // Adder and Creation functionality
   openAdder(){
@@ -104,7 +104,6 @@ export class TextAnnotatorComponent implements OnInit {
     this.updateMode = true;
   }
 
-  //CORS function db
   updateAnnotation(note){
     const annotation = this.db.get({id:this.noteInfo[0].id}).then(annotation => {
       annotation.body.value = note
@@ -115,23 +114,14 @@ export class TextAnnotatorComponent implements OnInit {
   }
 
   deleteAnnotation(){
-    const annotation = this.getCurrentAnnotation()
-    const child = annotation.innerText
-    annotation.innerHTML = child
+    const annotation = Array.from(document.querySelectorAll(`[data-id="${this.noteInfo[0].id}"]`))
+    annotation.map((anno:HTMLElement) => {
+      anno.outerHTML = anno.innerHTML
+    })
     this.showCreator = false;
     this.db.remove(this.noteInfo[0].id)
   }
 
-  getCurrentAnnotation(){
-    let annotations = Array.from(document.getElementsByTagName("evt-highlight-note"));
-    let annotation;
-    annotations.map((anno:HTMLElement) => {
-      if(this.noteInfo[0].id === anno.getAttribute('data-id')){
-        annotation = anno;
-      }
-    })
-    return annotation
-  }
   createAnnotation(type, note?) {
     let annotation: Annotation =
     {

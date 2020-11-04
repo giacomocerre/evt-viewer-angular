@@ -10,7 +10,6 @@ export class AnnotatorService implements OnDestroy {
   public osdCurrentPage:string;
 
   getTextSelection() {
-    console.log(document.getSelection())
     this.textSelection.next(document.getSelection());
   }
 
