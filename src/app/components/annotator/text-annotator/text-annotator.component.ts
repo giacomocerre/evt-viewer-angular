@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { fromEvent } from 'rxjs';
 import { Annotation, AnnotationID } from 'src/app/models/evt-models';
 import { AnchoringService } from 'src/app/services/annotator/anchoring.service';
 import { AnnotatorService } from 'src/app/services/annotator/annotator.service';
@@ -50,7 +51,7 @@ export class TextAnnotatorComponent implements OnInit {
     setTimeout(() => {
       let span = Array.from(document.getElementsByTagName("evt-annotation"));
       span.forEach((s:HTMLElement) => {
-        s.addEventListener('click', () => {
+        fromEvent(s, 'click').subscribe( () => {
           this.noteInfo = []
           const id = s.getAttribute("data-id");
           const collection = this.db.where("id").equals(id).toArray();
@@ -74,7 +75,7 @@ export class TextAnnotatorComponent implements OnInit {
     const range = sel.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     const regex = new RegExp(`(.{0,32})${this.selectedText.replace(/\n|\r/g, '')}(.{0,32})`);
-    this.noteSettings = textAnnotationSettings(range, rect, regex);
+    this.noteSettings = textAnnotationSettings(sel, range, rect, regex);
   }
   // Adder and Creation functionality
   openAdder(){

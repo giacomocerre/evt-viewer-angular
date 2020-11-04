@@ -10,6 +10,7 @@ export class AnnotatorService implements OnDestroy {
   public osdCurrentPage:string;
 
   getTextSelection() {
+    console.log(document.getSelection())
     this.textSelection.next(document.getSelection());
   }
 
@@ -21,6 +22,7 @@ export class AnnotatorService implements OnDestroy {
   ngOnDestroy(): void{
     this.textSelection.unsubscribe()
     this.imageSelection.unsubscribe()
+    
   }
 
 }
