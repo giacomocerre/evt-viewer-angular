@@ -85,17 +85,17 @@ export class AnchoringService {
   }
 
   highlightRange(annotation, type, id) {
-    let range = document.createRange()
-    let startNode = document.evaluate( annotation[3].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let endNode = document.evaluate( annotation[3].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
+    const range = document.createRange()
+    const startNode = document.evaluate( annotation[3].startSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    const endNode = document.evaluate( annotation[3].endSelector.value, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; 
     try {
       range.setStart(startNode.firstChild, annotation[2].start);
       range.setEnd(endNode.firstChild, annotation[2].end);
-      const selectedText = range.extractContents();
+      const annotatedNodes = range.extractContents();
       const span = document.createElement("evt-annotation");
       span.setAttribute("class",`${type}`);
       span.setAttribute("data-id",`${id}`);
-      span.appendChild(selectedText);
+      span.appendChild(annotatedNodes);
       range.insertNode(span);
     } catch (error) {
       null;

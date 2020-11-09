@@ -57,6 +57,7 @@ export class TextAnnotatorComponent implements OnInit {
           const collection = this.db.where("id").equals(id).toArray();
           collection.then((annotations: Array<Annotation>) => {
             annotations.map(anno => {
+              console.log(anno)
               this.noteInfo.push(anno),
               this.selectedText = anno.target.selector[0].exact,
               this.noteSettings.adder.x = anno.target.selector[1].start,
